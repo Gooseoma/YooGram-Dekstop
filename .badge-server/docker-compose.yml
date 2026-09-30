@@ -1,0 +1,9 @@
+services:
+  badges:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "80:8080"
+    volumes:
+      - ./data:/srv/data
