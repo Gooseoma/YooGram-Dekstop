@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="top">
+  <h1>YooGram badges</h1>
+  <form method="post" action="/admin/logout">
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    <button class="plain" type="submit">Sign out</button>
+  </form>
+</div>
+
+{% if error %}<p class="err">{{ error }}</p>{% endif %}
+{% if notice %}<p class="ok">{{ notice }}</p>{% endif %}
+
+<div class="card">
+  <h2>Give a badge</h2>
+  <form method="post" action="/admin/grant">
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    <div class="row">
+      <div><label for="tg_id">Telegram user ID</label>
+        <input id="tg_id" name="tg_id" inputmode="numeric" pattern="[0-9]+" required></div>
+      <div><label for="kind">Type</label>
+        <select id="kind" name="kind">
+          <option value="emoji">Emoji (like a verified check)</option>
+          <option value="label">Text label (like "Developer")</option>
+        </select></div>
+    </div>
+    <div class="row">
+      <div><label for="emoji">Emoji (for emoji type)</label>
+        <input id="emoji" name="emoji" maxlength="16" placeholder="✅"></div>
+      <div><label for="label">Label (for text type)</label>
+        <input id="label" name="label" maxlength="24" placeholder="Developer"></div>
+      <div><label for="color">Color</label>
+        <input id="color" name="color" type="color" value="#2a9df4"></div>
+    </div>
+    <div class="row">
+      <div><label for="tooltip">Tooltip (optional)</label>
+        <input id="tooltip" name="tooltip" maxlength="64" placeholder="YooGram developer"></div>
+      <div><label for="days">Expires in days (optional)</label>
+        <input id="days" name="days" inputmode="numeric" pattern="[0-9]*"></div>
+    </div>
+    <button type="submit">Save</button>
+    <span class="muted">Giving a badge to an ID that already has one replaces it.</span>
+  </form>
+</div>
+
+<div class="card">
+  <h2>Issued badges ({{ grants|length }})</h2>
+  {% if grants %}
+  <table>
+    <tr><th>User ID</th><th>Badge</th><th>Tooltip</th><th>Expires</th><th></th></tr>
+    {% for g in grants %}
+    <tr>
+      <td><code>{{ g.tg_id }}</code></td>
+      <td>
+        {% if g.kind == "emoji" %}{{ g.emoji }}
+        {% else %}<span class="pill" style="background:{{ g.color }}">{{ g.label }}</span>{% endif %}
+      </td>
+      <td>{{ g.tooltip }}</td>
+      <td class="muted">{% if g.expires_at %}in {{ ((g.expires_at - now) // 86400) + 1 }} d{% else %}never{% endif %}</td>
+      <td>
+        <form method="post" action="/admin/revoke">
+          <input type="hidden" name="csrf" value="{{ csrf }}">
+          <input type="hidden" name="tg_id" value="{{ g.tg_id }}">
+          <button class="danger" type="submit">Remove</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}<p class="muted">No badges yet.</p>{% endif %}
+</div>
+
+<p class="muted">List version: {{ version }}<br>
+Public key (embed in the client): <code>{{ public_key }}</code></p>
+{% endblock %}

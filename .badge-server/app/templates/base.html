@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>YooGram badges</title>
+<style>
+:root { color-scheme: light dark; --bg:#f6f7f9; --fg:#1b1f24; --card:#fff; --line:#d8dde3; --accent:#2a9df4; --bad:#c0392b; --ok:#1e8449; }
+@media (prefers-color-scheme: dark) { :root { --bg:#14171a; --fg:#e6e9ec; --card:#1d2126; --line:#313840; } }
+* { box-sizing: border-box; }
+body { margin:0; background:var(--bg); color:var(--fg); font:15px/1.45 system-ui, sans-serif; }
+main { max-width:860px; margin:0 auto; padding:24px 16px 48px; }
+h1 { font-size:22px; margin:0 0 16px; } h2 { font-size:17px; margin:0 0 12px; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px; margin-bottom:16px; }
+label { display:block; font-size:13px; margin:0 0 4px; opacity:.8; }
+input, select { width:100%; padding:8px 10px; border:1px solid var(--line); border-radius:6px; background:var(--bg); color:var(--fg); font:inherit; }
+.row { display:grid; grid-template-columns:repeat(auto-fit, minmax(170px, 1fr)); gap:12px; margin-bottom:12px; }
+button { padding:8px 16px; border:0; border-radius:6px; background:var(--accent); color:#fff; font:inherit; cursor:pointer; }
+button.danger { background:var(--bad); } button.plain { background:transparent; color:var(--fg); border:1px solid var(--line); }
+table { width:100%; border-collapse:collapse; } th, td { text-align:left; padding:8px 6px; border-bottom:1px solid var(--line); vertical-align:middle; }
+.pill { display:inline-block; padding:1px 8px; border-radius:999px; color:#fff; font-size:13px; }
+.err { color:var(--bad); margin:0 0 12px; } .ok { color:var(--ok); margin:0 0 12px; }
+.muted { opacity:.65; font-size:13px; } code { word-break:break-all; }
+.top { display:flex; justify-content:space-between; align-items:center; }
+</style>
+</head>
+<body><main>{% block body %}{% endblock %}</main></body>
+</html>
