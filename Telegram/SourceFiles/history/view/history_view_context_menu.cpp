@@ -103,6 +103,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "window/window_peer_menu.h"
 #include "window/window_controller.h"
 #include "window/window_session_controller.h"
+#include "yoogram/yoogram_moderation.h"
 #include "info/statistics/info_statistics_widget.h"
 #include "lang/lang_keys.h"
 #include "core/application.h"
@@ -1407,6 +1408,12 @@ void AddMessageActions(
 	AddOfferAction(menu, request, list);
 	AddSendNowAction(menu, request, list);
 	AddDeleteAction(menu, request, list);
+	if (request.item && request.selectedItems.empty()) {
+		YooGram::AddQuickModerationActions(
+			menu,
+			request.item,
+			list->controller()->uiShow());
+	}
 	AddDownloadFilesAction(menu, request, list);
 	AddSaveRichHtmlAction(menu, request, list);
 	AddReportAction(menu, request, list);
