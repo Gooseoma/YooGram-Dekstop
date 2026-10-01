@@ -11,6 +11,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "settings/sections/settings_main.h"
 #include "settings/settings_builder.h"
 #include "settings/settings_common.h"
+#include "ui/platform/ui_platform_utility.h"
 #include "ui/vertical_list.h"
 #include "ui/widgets/buttons.h"
 #include "ui/wrap/vertical_layout.h"
@@ -48,6 +49,32 @@ void BuildYooGramSectionContent(SectionBuilder &builder) {
 
 	builder.addSkip();
 	builder.addDividerText(tr::lng_yoogram_quick_moderation_about());
+
+	const auto glassSupported = Ui::Platform::GlassBackdropSupported();
+	builder.addSkip();
+	builder.addSubsectionTitle({
+		.id = u"yoogram/appearance"_q,
+		.title = tr::lng_yoogram_appearance(),
+		.keywords = { u"glass"_q, u"blur"_q, u"menu"_q },
+	});
+
+	const auto glass = builder.addButton({
+		.id = u"yoogram/glass_menu"_q,
+		.title = tr::lng_yoogram_glass_menu(),
+		.st = &st::settingsButtonNoIcon,
+		.toggled = rpl::single(YooGram::GlassMenuEnabled()),
+		.keywords = { u"glass"_q, u"blur"_q, u"acrylic"_q, u"menu"_q },
+		.shown = rpl::single(glassSupported),
+	});
+	if (glass) {
+		glass->toggledChanges(
+		) | rpl::on_next([](bool enabled) {
+			YooGram::SetGlassMenuEnabled(enabled);
+		}, glass->lifetime());
+	}
+
+	builder.addSkip();
+	builder.addDividerText(tr::lng_yoogram_glass_menu_about());
 }
 
 const auto kMeta = BuildHelper({
