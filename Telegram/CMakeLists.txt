@@ -1903,6 +1903,8 @@ PRIVATE
     settings/sections/settings_shortcuts.h
     settings/sections/settings_websites.cpp
     settings/sections/settings_websites.h
+    settings/sections/settings_yoogram.cpp
+    settings/sections/settings_yoogram.h
     storage/details/storage_file_utilities.cpp
     storage/details/storage_file_utilities.h
     storage/details/storage_settings_scheme.cpp
@@ -2189,6 +2191,10 @@ PRIVATE
     window/themes/window_themes_embedded.h
     window/themes/window_themes_generate_name.cpp
     window/themes/window_themes_generate_name.h
+    yoogram/yoogram_moderation.cpp
+    yoogram/yoogram_moderation.h
+    yoogram/yoogram_settings.cpp
+    yoogram/yoogram_settings.h
     apiwrap.cpp
     apiwrap.h
     config.h

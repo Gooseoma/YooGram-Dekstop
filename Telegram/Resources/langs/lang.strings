@@ -870,6 +870,17 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 "lng_settings_add_account_about" = "You can add up to four accounts with different phone numbers.";
 "lng_settings_peer_to_peer_about" = "Disabling peer-to-peer will relay all calls through Telegram servers to avoid revealing your IP address, but may decrease audio and video quality.";
 "lng_settings_advanced" = "Advanced";
+"lng_settings_yoogram" = "YooGram";
+"lng_yoogram_moderation" = "Moderation";
+"lng_yoogram_quick_moderation" = "Quick moderation actions";
+"lng_yoogram_quick_moderation_about" = "Adds mute and ban shortcuts to the message menu for admins of supergroups.";
+"lng_yoogram_mute_10m" = "Mute for 10 minutes";
+"lng_yoogram_mute_1h" = "Mute for 1 hour";
+"lng_yoogram_mute_1d" = "Mute for 1 day";
+"lng_yoogram_ban" = "Ban";
+"lng_yoogram_ban_sure" = "Ban {name} from this group?";
+"lng_yoogram_muted" = "{name} muted.";
+"lng_yoogram_banned" = "{name} banned.";
 "lng_settings_stickers_emoji" = "Stickers and emoji";
 "lng_settings_messages" = "Messages";
 "lng_settings_themes" = "Themes";
