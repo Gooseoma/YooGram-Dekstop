@@ -12,4 +12,8 @@ namespace YooGram {
 [[nodiscard]] bool QuickModerationEnabled();
 void SetQuickModerationEnabled(bool enabled);
 
+[[nodiscard]] bool GlassMenuEnabled();
+void SetGlassMenuEnabled(bool enabled);
+void ApplyGlassMenuSetting();
+
 } // namespace YooGram

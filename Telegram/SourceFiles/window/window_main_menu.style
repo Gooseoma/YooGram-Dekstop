@@ -33,6 +33,8 @@ mainMenuCoverStatusTop: 103px;
 mainMenuSkip: 6px;
 mainMenuFooterHeightMin: 80px;
 mainMenu: Menu(defaultMenu) {
+	itemBg: windowBg;
+	itemBgOver: windowBgOver;
 	itemFg: windowBoldFg;
 	itemFgOver: windowBoldFgOver;
 	itemStyle: semiboldTextStyle;
