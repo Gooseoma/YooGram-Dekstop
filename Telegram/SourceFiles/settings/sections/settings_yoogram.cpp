@@ -13,6 +13,8 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "settings/settings_builder.h"
 #include "settings/settings_common.h"
 #include "ui/platform/ui_platform_utility.h"
+#include "ui/boxes/single_choice_box.h"
+#include "ui/layers/generic_box.h"
 #include "ui/vertical_list.h"
 #include "ui/widgets/continuous_sliders.h"
 #include "ui/widgets/labels.h"
@@ -22,6 +24,8 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "yoogram/yoogram_settings.h"
 #include "styles/style_menu_icons.h"
 #include "styles/style_settings.h"
+
+#include <algorithm>
 
 namespace Settings {
 namespace {
@@ -124,6 +128,57 @@ void AddStickerSizeSlider(SectionBuilder &builder) {
 			.id = u"yoogram/sticker_size"_q,
 			.title = tr::lng_yoogram_sticker_size(tr::now),
 			.keywords = { u"sticker"_q, u"size"_q },
+		};
+	});
+}
+
+void AddDoubleTapSeek(SectionBuilder &builder) {
+	builder.add([](const WidgetContext &ctx) {
+		const auto controller = ctx.controller;
+		const auto value = ctx.container->lifetime().make_state<
+			rpl::variable<int>
+		>(YooGram::DoubleTapSeekSeconds());
+		const auto text = [](int seconds) {
+			return seconds
+				? tr::lng_seconds(tr::now, lt_count, seconds)
+				: tr::lng_yoogram_off(tr::now);
+		};
+		const auto button = AddButtonWithLabel(
+			ctx.container,
+			tr::lng_yoogram_double_tap_seek(),
+			value->value() | rpl::map(text),
+			st::settingsButtonNoIcon);
+		button->addClickHandler([=] {
+			controller->show(Box([=](not_null<Ui::GenericBox*> box) {
+				const auto steps = std::vector<int>{ 0, 5, 10, 20 };
+				auto options = std::vector<QString>();
+				for (const auto step : steps) {
+					options.push_back(text(step));
+				}
+				const auto i = std::find(
+					steps.begin(),
+					steps.end(),
+					value->current());
+				SingleChoiceBox(box, {
+					.title = tr::lng_yoogram_double_tap_seek(),
+					.options = options,
+					.initialSelection = (i == steps.end())
+						? 0
+						: int(i - steps.begin()),
+					.callback = [=](int index) {
+						const auto seconds = steps[index];
+						*value = seconds;
+						YooGram::SetDoubleTapSeekSeconds(seconds);
+					},
+				});
+			}));
+		});
+		return SectionBuilder::WidgetToAdd{};
+	}, [] {
+		return SearchEntry{
+			.id = u"yoogram/double_tap_seek"_q,
+			.title = tr::lng_yoogram_double_tap_seek(tr::now),
+			.keywords = { u"video"_q, u"seek"_q, u"double"_q, u"tap"_q },
 		};
 	});
 }
@@ -254,6 +309,22 @@ void BuildAppearance(SectionBuilder &builder) {
 		{ u"stories"_q, u"hide"_q });
 	builder.addSkip();
 	builder.addDividerText(tr::lng_yoogram_chat_list_about());
+
+	builder.addSkip();
+	builder.addSubsectionTitle({
+		.id = u"yoogram/folders"_q,
+		.title = tr::lng_yoogram_folders(),
+		.keywords = { u"folders"_q, u"counter"_q, u"unread"_q },
+	});
+	AddToggle(
+		builder,
+		u"yoogram/hide_folder_counters"_q,
+		tr::lng_yoogram_hide_folder_counters(),
+		YooGram::HideFolderCounters(),
+		[](bool value) { YooGram::SetHideFolderCounters(value); },
+		{ u"folders"_q, u"counter"_q, u"unread"_q, u"badge"_q });
+	builder.addSkip();
+	builder.addDividerText(tr::lng_yoogram_folders_about());
 }
 
 void BuildChats(SectionBuilder &builder) {
@@ -342,6 +413,16 @@ void BuildChats(SectionBuilder &builder) {
 		{ u"photo"_q, u"hd"_q, u"quality"_q });
 	builder.addSkip();
 	builder.addDividerText(tr::lng_yoogram_chat_view_about());
+
+	builder.addSkip();
+	builder.addSubsectionTitle({
+		.id = u"yoogram/video"_q,
+		.title = tr::lng_yoogram_video(),
+		.keywords = { u"video"_q, u"seek"_q },
+	});
+	AddDoubleTapSeek(builder);
+	builder.addSkip();
+	builder.addDividerText(tr::lng_yoogram_double_tap_seek_about());
 }
 
 void BuildOther(SectionBuilder &builder) {

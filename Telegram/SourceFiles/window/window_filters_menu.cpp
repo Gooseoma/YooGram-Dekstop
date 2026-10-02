@@ -42,6 +42,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "boxes/premium_limits_box.h"
 #include "settings/sections/settings_folders.h"
 #include "storage/storage_media_prepare.h"
+#include "yoogram/yoogram_settings.h"
 #include "api/api_chat_filters.h"
 #include "apiwrap.h"
 #include "styles/style_widgets.h"
@@ -613,8 +614,9 @@ base::unique_qptr<Ui::SideBarButton> FiltersMenu::prepareButton(
 			const auto chats = state.chats;
 			const auto chatsMuted = state.chatsMuted;
 			const auto muted = (chatsMuted + state.marksMuted);
-			const auto count = (chats + state.marks)
-				- (includeMuted ? 0 : muted);
+			const auto count = YooGram::HideFolderCounters()
+				? 0
+				: ((chats + state.marks) - (includeMuted ? 0 : muted));
 			const auto string = !count
 				? QString()
 				: (count > 999)

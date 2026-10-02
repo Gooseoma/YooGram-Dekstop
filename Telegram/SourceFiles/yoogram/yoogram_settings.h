@@ -64,9 +64,17 @@ void SetForceSnow(bool enabled);
 [[nodiscard]] bool HideStories();
 void SetHideStories(bool enabled);
 
+[[nodiscard]] bool HideFolderCounters();
+void SetHideFolderCounters(bool enabled);
+
 // Sticker size step like on Android: kStickerSizeDefault is the normal size.
 [[nodiscard]] int StickerSizeStep();
 void SetStickerSizeStep(int step);
+
+// Seconds to jump on a double click on the left or right side of a video
+// in the media viewer, 0 means the feature is off.
+[[nodiscard]] int DoubleTapSeekSeconds();
+void SetDoubleTapSeekSeconds(int seconds);
 
 [[nodiscard]] bool UnifiedRounding();
 void SetUnifiedRounding(bool enabled);

@@ -70,6 +70,7 @@ private:
 
 constexpr auto kAvatarRadiusKey = std::string_view("yoogram-avatar-radius");
 constexpr auto kStickerSizeKey = std::string_view("yoogram-sticker-size");
+constexpr auto kDoubleTapSeekKey = std::string_view("yoogram-double-tap-seek");
 
 CachedFlag FullNumbersFlag("yoogram-full-numbers", false);
 CachedFlag TimeSecondsFlag("yoogram-time-seconds", false);
@@ -81,7 +82,9 @@ CachedFlag AlwaysHDFlag("yoogram-always-hd", false);
 CachedFlag UnifiedRoundingFlag("yoogram-unified-rounding", false);
 CachedFlag ForceSnowFlag("yoogram-force-snow", false);
 CachedFlag HideStoriesFlag("yoogram-hide-stories", false);
+CachedFlag HideFolderCountersFlag("yoogram-hide-folder-counters", false);
 std::atomic<int> StickerSize = kStickerSizeDefault;
+std::atomic<int> DoubleTapSeek = 0;
 std::atomic<int> AvatarRadius = kAvatarRadiusMax;
 
 } // namespace
@@ -213,6 +216,14 @@ void SetHideStories(bool enabled) {
 	HideStoriesFlag.set(enabled);
 }
 
+bool HideFolderCounters() {
+	return HideFolderCountersFlag.value();
+}
+
+void SetHideFolderCounters(bool enabled) {
+	HideFolderCountersFlag.set(enabled);
+}
+
 int StickerSizeStep() {
 	return StickerSize.load(std::memory_order_relaxed);
 }
@@ -221,6 +232,16 @@ void SetStickerSizeStep(int step) {
 	step = std::clamp(step, kStickerSizeMin, kStickerSizeMax);
 	WriteInt(kStickerSizeKey, step);
 	StickerSize.store(step, std::memory_order_relaxed);
+}
+
+int DoubleTapSeekSeconds() {
+	return DoubleTapSeek.load(std::memory_order_relaxed);
+}
+
+void SetDoubleTapSeekSeconds(int seconds) {
+	seconds = std::clamp(seconds, 0, 60);
+	WriteInt(kDoubleTapSeekKey, seconds);
+	DoubleTapSeek.store(seconds, std::memory_order_relaxed);
 }
 
 bool UnifiedRounding() {
@@ -261,6 +282,10 @@ void LoadRuntimeSettings() {
 		std::memory_order_relaxed);
 	ForceSnowFlag.load();
 	HideStoriesFlag.load();
+	HideFolderCountersFlag.load();
+	DoubleTapSeek.store(
+		ReadInt(kDoubleTapSeekKey, 0, 0, 60),
+		std::memory_order_relaxed);
 	ApplyGlassMenuSetting();
 }
 
