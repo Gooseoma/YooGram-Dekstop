@@ -7,6 +7,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 */
 #include "history/view/history_view_bottom_info.h"
 #include "yoogram/yoogram_format.h"
+#include "yoogram/yoogram_settings.h"
 
 #include "ui/chat/message_bubble.h"
 #include "ui/chat/chat_style.h"
@@ -493,7 +494,9 @@ void BottomInfo::layoutDateText() {
 		: updated
 		? (tr::lng_ephemeral_updated(tr::now) + ' ')
 		: (_data.flags & Data::Flag::Edited)
-		? (tr::lng_edited(tr::now) + ' ')
+		? (YooGram::EditedIcon()
+			? (QString(QChar(0x270E)) + ' ')
+			: (tr::lng_edited(tr::now) + ' '))
 		: (_data.flags & Data::Flag::EstimateDate)
 		? (tr::lng_approximate(tr::now) + ' ')
 		: _data.scheduleRepeatPeriod

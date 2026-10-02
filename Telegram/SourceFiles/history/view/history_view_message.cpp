@@ -65,6 +65,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "window/window_session_controller.h"
 #include "apiwrap.h"
 #include "api/api_rich_tasks.h"
+#include "yoogram/yoogram_settings.h"
 #include "styles/style_chat.h"
 #include "styles/style_chat_helpers.h"
 #include "styles/style_chat_style.h"
@@ -6531,7 +6532,8 @@ Ui::BubbleRounding Message::countMessageRounding() const {
 		|| (media && media->skipBubbleTail())
 		|| (keyboard != nullptr)
 		|| item->isFakeAboutView()
-		|| isCommentsRootView();
+		|| isCommentsRootView()
+		|| YooGram::HideMessageTail();
 	const auto right = hasRightLayout();
 	using Corner = Ui::BubbleCornerRounding;
 	return Ui::BubbleRounding{

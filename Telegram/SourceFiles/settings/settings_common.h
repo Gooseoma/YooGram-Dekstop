@@ -14,6 +14,8 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "base/weak_qptr.h"
 #include "settings/settings_type.h"
 
+#include <QtGui/QImage>
+
 #include <any>
 
 namespace anim {
@@ -229,6 +231,7 @@ struct IconDescriptor {
 	const style::color *background = nullptr;
 	std::optional<QBrush> backgroundBrush; // Can be useful for gradients.
 	bool newBadge = false;
+	QImage image; // Painted instead of the icon mask when not null.
 
 	explicit operator bool() const {
 		return (icon != nullptr);
@@ -248,6 +251,7 @@ public:
 
 private:
 	not_null<const style::icon*> _icon;
+	QImage _image;
 	std::optional<Ui::RoundRect> _background;
 	std::optional<std::pair<int, QBrush>> _backgroundBrush;
 

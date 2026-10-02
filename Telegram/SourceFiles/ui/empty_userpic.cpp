@@ -13,6 +13,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "ui/emoji_config.h"
 #include "ui/painter.h"
 #include "ui/ui_utility.h"
+#include "yoogram/yoogram_settings.h"
 #include "styles/style_chat.h"
 #include "styles/style_dialogs.h"
 #include "styles/style_widgets.h" // style::IconButton
@@ -340,7 +341,12 @@ void EmptyUserpic::paintCircle(
 		int outerWidth,
 		int size) const {
 	paint(p, x, y, outerWidth, size, [&] {
-		p.drawEllipse(x, y, size, size);
+		if (YooGram::CustomAvatarRadius()) {
+			const auto radius = size * YooGram::UserpicRadiusMultiplier();
+			p.drawRoundedRect(x, y, size, size, radius, radius);
+		} else {
+			p.drawEllipse(x, y, size, size);
+		}
 	});
 }
 

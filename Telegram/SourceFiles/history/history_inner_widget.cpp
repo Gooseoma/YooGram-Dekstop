@@ -66,6 +66,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "window/window_controller.h"
 #include "window/window_peer_menu.h"
 #include "window/notifications_manager.h"
+#include "yoogram/yoogram_settings.h"
 #include "info/info_memento.h"
 #include "info/statistics/info_statistics_widget.h"
 #include "boxes/about_sponsored_box.h"
@@ -5931,9 +5932,10 @@ void HistoryInner::refreshAboutView(bool force) {
 			if (user->starsPerMessage() > 0
 				|| (user->requiresPremiumToWrite()
 					&& !user->session().premium())
-				|| user->isFullLoaded()) {
+				|| (user->isFullLoaded()
+					&& !YooGram::HideWelcomeSticker())) {
 				refresh();
-			} else {
+			} else if (!user->isFullLoaded()) {
 				session().api().requestFullPeer(user);
 			}
 		}

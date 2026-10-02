@@ -34,6 +34,8 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 
 #include <QAction>
 
+#include <QtGui/QPainterPath>
+
 namespace Settings {
 namespace {
 
@@ -371,7 +373,9 @@ void AbstractSection::setNavigationAnchor(not_null<QWidget*> widget) {
 	_keyNavigation->anchorTo(widget);
 }
 
-Icon::Icon(IconDescriptor descriptor) : _icon(descriptor.icon) {
+Icon::Icon(IconDescriptor descriptor)
+: _icon(descriptor.icon)
+, _image(std::move(descriptor.image)) {
 	const auto background = [&]() -> const style::color* {
 		if (descriptor.type == IconType::Simple) {
 			return nullptr;
@@ -396,6 +400,20 @@ void Icon::paint(QPainter &p, QPoint position) const {
 }
 
 void Icon::paint(QPainter &p, int x, int y) const {
+	if (!_image.isNull()) {
+		PainterHighQualityEnabler hq(p);
+		const auto rect = QRect(QPoint(x, y), _icon->size());
+		auto path = QPainterPath();
+		path.addRoundedRect(
+			QRectF(rect),
+			st::settingsIconRadius,
+			st::settingsIconRadius);
+		p.save();
+		p.setClipPath(path);
+		p.drawImage(rect, _image);
+		p.restore();
+		return;
+	}
 	if (_background) {
 		_background->paint(p, { { x, y }, _icon->size() });
 	} else if (_backgroundBrush) {

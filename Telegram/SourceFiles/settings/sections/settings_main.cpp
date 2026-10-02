@@ -370,7 +370,10 @@ void BuildSectionButtons(SectionBuilder &builder) {
 	builder.addSectionButton({
 		.title = tr::lng_settings_yoogram(),
 		.targetSection = YooGramId(),
-		.icon = { &st::menuIconYooGram },
+		.icon = {
+			.icon = &st::menuIconYooGram,
+			.image = YooGram::AppLogo(),
+		},
 		.keywords = {
 			u"yoogram"_q,
 			u"mod"_q,

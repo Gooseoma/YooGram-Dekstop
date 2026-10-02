@@ -898,6 +898,17 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 "lng_yoogram_support" = "Support";
 "lng_yoogram_github" = "GitHub";
 "lng_yoogram_github_about" = "Source code, updates and bug reports.";
+"lng_yoogram_avatars" = "Avatars";
+"lng_yoogram_avatar_radius" = "Avatar rounding";
+"lng_yoogram_unified_rounding" = "Same shape for forums";
+"lng_yoogram_avatars_about" = "Drag the slider from a square to a circle. With the switch on, forums use the same shape as chats. Changes fully apply after a restart.";
+"lng_yoogram_hide_tail" = "Remove message tail";
+"lng_yoogram_edited_icon" = "Edited mark as an icon";
+"lng_yoogram_hide_sticker_time" = "Hide time on stickers";
+"lng_yoogram_chat_view" = "Chat view";
+"lng_yoogram_hide_welcome" = "Hide welcome sticker";
+"lng_yoogram_always_hd" = "Always send photos in HD";
+"lng_yoogram_chat_view_about" = "The welcome sticker is the greeting shown in an empty chat. Hiding the time on stickers also hides their read marks.";
 "lng_yoogram_appearance" = "Appearance";
 "lng_yoogram_glass_menu" = "Frosted glass menus";
 "lng_yoogram_glass_menu_about" = "Blurs the background behind context menus and popups. Works on Windows 10 and 11 and applies to menus opened after you switch it.";
