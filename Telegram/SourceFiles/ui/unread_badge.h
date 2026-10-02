@@ -14,6 +14,10 @@ namespace style {
 struct VerifiedBadge;
 } // namespace style
 
+namespace YooGram {
+struct CustomBadge;
+} // namespace YooGram
+
 namespace Ui {
 
 class UnreadBadge : public RpWidget {
@@ -93,6 +97,10 @@ private:
 	struct BotVerifiedData;
 
 	int drawTextBadge(Painter &p, const Descriptor &descriptor);
+	int drawCustomBadge(
+		Painter &p,
+		const Descriptor &descriptor,
+		const YooGram::CustomBadge &badge);
 	int drawVerifyCheck(Painter &p, const Descriptor &descriptor);
 	int drawPremiumEmojiStatus(Painter &p, const Descriptor &descriptor);
 	int drawPremiumStar(Painter &p, const Descriptor &descriptor);

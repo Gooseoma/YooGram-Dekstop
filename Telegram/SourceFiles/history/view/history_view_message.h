@@ -540,6 +540,7 @@ private:
 	mutable std::unique_ptr<FromNameStatus> _fromNameStatus;
 	mutable std::unique_ptr<Ui::RoundCheckbox> _selectionRoundCheckbox;
 	mutable uint32 _fromNameVersion : 16 = 0;
+	mutable int _yooNameBadgeVersion = -1;
 	uint32 _nonTextMaxWidth : 16 = 0;
 	mutable int _bubbleTextualWidthMinimum : 16 = -1;
 	mutable int _bubbleTextualWidthCache : 16 = 0;

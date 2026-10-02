@@ -19,6 +19,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "ui/power_saving.h"
 #include "ui/text/text_custom_emoji.h"
 #include "ui/unread_badge_paint.h"
+#include "yoogram/yoogram_badges.h"
 #include "styles/style_dialogs.h"
 
 namespace Ui {
@@ -239,6 +240,17 @@ int PeerBadge::drawGetWidth(Painter &p, Descriptor &&descriptor) {
 	Expects(descriptor.customEmojiRepaint != nullptr);
 
 	const auto peer = descriptor.peer;
+	if (descriptor.premium) {
+		if (const auto user = peer->asUser()) {
+			if (const auto custom = YooGram::LookupBadge(
+					peerToUser(user->id).bare)) {
+				if (_emojiStatus) {
+					_emojiStatus->painted = false;
+				}
+				return drawCustomBadge(p, descriptor, *custom);
+			}
+		}
+	}
 	if ((descriptor.scam && (peer->isScam() || peer->isFake()))
 		|| (descriptor.direct && peer->isMonoforum())) {
 		if (_emojiStatus) {
@@ -287,6 +299,55 @@ int PeerBadge::drawGetWidth(Painter &p, Descriptor &&descriptor) {
 		return drawPremiumStar(p, descriptor);
 	}
 	return 0;
+}
+
+int PeerBadge::drawCustomBadge(
+		Painter &p,
+		const Descriptor &descriptor,
+		const YooGram::CustomBadge &badge) {
+	const auto rectForName = descriptor.rectForName;
+	if (!badge.label) {
+		const auto &font = st::normalFont;
+		const auto width = font->width(badge.text);
+		const auto x = rectForName.x()
+			+ std::min(
+				descriptor.nameWidth + st::dialogsScamSkip,
+				rectForName.width() - width);
+		p.setFont(font);
+		p.setPen(badge.color);
+		p.drawText(
+			x,
+			rectForName.y() + (rectForName.height() - font->height) / 2
+				+ font->ascent,
+			badge.text);
+		return st::dialogsScamSkip + width;
+	}
+	const auto &font = st::dialogsScamFont;
+	const auto textWidth = font->width(badge.text);
+	const auto width = st::dialogsScamPadding.left()
+		+ textWidth
+		+ st::dialogsScamPadding.right();
+	const auto height = st::dialogsScamPadding.top()
+		+ font->height
+		+ st::dialogsScamPadding.bottom();
+	const auto rect = QRect(
+		(rectForName.x()
+			+ std::min(
+				descriptor.nameWidth + st::dialogsScamSkip,
+				rectForName.width() - width)),
+		rectForName.y() + (rectForName.height() - height) / 2,
+		width,
+		height);
+	PainterHighQualityEnabler hq(p);
+	auto background = badge.color;
+	background.setAlpha(48);
+	p.setPen(Qt::NoPen);
+	p.setBrush(background);
+	p.drawRoundedRect(rect, st::dialogsScamRadius, st::dialogsScamRadius);
+	p.setFont(font);
+	p.setPen(badge.color);
+	p.drawText(rect, Qt::AlignCenter, badge.text);
+	return st::dialogsScamSkip + width;
 }
 
 int PeerBadge::drawTextBadge(Painter &p, const Descriptor &descriptor) {

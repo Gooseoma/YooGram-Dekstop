@@ -42,5 +42,10 @@ void BadgesSettingChanged();
 
 // Increments every time the list (or the setting) changes.
 [[nodiscard]] rpl::producer<int> BadgesVersionValue();
+[[nodiscard]] int BadgesVersion();
+
+// A short text to append to the user's name in message headers:
+// " emoji" or " [label]", empty if the user has no badge.
+[[nodiscard]] QString NameBadgeSuffix(uint64 userId);
 
 } // namespace YooGram

@@ -484,6 +484,13 @@ void BuildChats(SectionBuilder &builder) {
 		YooGram::MessageOnlineIndicator(),
 		[](bool value) { YooGram::SetMessageOnlineIndicator(value); },
 		{ u"online"_q, u"status"_q, u"avatar"_q, u"indicator"_q });
+	AddToggle(
+		builder,
+		u"yoogram/plain_replies"_q,
+		tr::lng_yoogram_plain_replies(),
+		YooGram::PlainReplies(),
+		[](bool value) { YooGram::SetPlainReplies(value); },
+		{ u"reply"_q, u"color"_q, u"emoji"_q, u"background"_q });
 	builder.addSkip();
 	builder.addDividerText(tr::lng_yoogram_comma_mention_about());
 

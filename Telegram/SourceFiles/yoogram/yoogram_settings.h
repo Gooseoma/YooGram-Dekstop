@@ -79,6 +79,10 @@ void SetSaveDeletedMessages(bool enabled);
 [[nodiscard]] bool MessageOnlineIndicator();
 void SetMessageOnlineIndicator(bool enabled);
 
+// Replies use the default accent: no peer colors, emoji or background.
+[[nodiscard]] bool PlainReplies();
+void SetPlainReplies(bool enabled);
+
 // Sticker size step like on Android: kStickerSizeDefault is the normal size.
 [[nodiscard]] int StickerSizeStep();
 void SetStickerSizeStep(int step);

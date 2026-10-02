@@ -65,6 +65,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "window/window_session_controller.h"
 #include "apiwrap.h"
 #include "api/api_rich_tasks.h"
+#include "yoogram/yoogram_badges.h"
 #include "yoogram/yoogram_settings.h"
 #include "styles/style_chat.h"
 #include "styles/style_chat_helpers.h"
@@ -5486,11 +5487,17 @@ void Message::validateFromNameText(PeerData *from) const {
 		return;
 	}
 	const auto version = from->nameVersion();
-	if (_fromNameVersion < version) {
+	const auto badgeVersion = YooGram::BadgesVersion();
+	if (_fromNameVersion < version || _yooNameBadgeVersion != badgeVersion) {
 		_fromNameVersion = version;
+		_yooNameBadgeVersion = badgeVersion;
+		const auto user = from->asUser();
 		_fromName.setText(
 			st::msgNameStyle,
-			from->name(),
+			user
+				? (from->name()
+					+ YooGram::NameBadgeSuffix(peerToUser(user->id).bare))
+				: from->name(),
 			Ui::NameTextOptions());
 	}
 	if (from->isPremium()
