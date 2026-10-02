@@ -11,6 +11,9 @@ class QImage;
 
 namespace YooGram {
 
+inline constexpr auto kAvatarRadiusMin = 2;
+inline constexpr auto kAvatarRadiusMax = 50;
+
 [[nodiscard]] bool QuickModerationEnabled();
 void SetQuickModerationEnabled(bool enabled);
 
@@ -29,6 +32,31 @@ void SetHidePhoneNumber(bool enabled);
 
 [[nodiscard]] bool CommaAfterMention();
 void SetCommaAfterMention(bool enabled);
+
+[[nodiscard]] bool HideWelcomeSticker();
+void SetHideWelcomeSticker(bool enabled);
+
+[[nodiscard]] bool HideMessageTail();
+void SetHideMessageTail(bool enabled);
+
+[[nodiscard]] bool EditedIcon();
+void SetEditedIcon(bool enabled);
+
+[[nodiscard]] bool HideStickerTime();
+void SetHideStickerTime(bool enabled);
+
+[[nodiscard]] bool AlwaysHDPhotos();
+void SetAlwaysHDPhotos(bool enabled);
+
+// Corner radius of avatars in percent of their size: kAvatarRadiusMin is
+// almost a square, kAvatarRadiusMax is a circle (the default).
+[[nodiscard]] int AvatarRadiusPercent();
+void SetAvatarRadiusPercent(int percent);
+[[nodiscard]] bool CustomAvatarRadius();
+[[nodiscard]] double UserpicRadiusMultiplier();
+
+[[nodiscard]] bool UnifiedRounding();
+void SetUnifiedRounding(bool enabled);
 
 [[nodiscard]] const QImage &AppLogo();
 

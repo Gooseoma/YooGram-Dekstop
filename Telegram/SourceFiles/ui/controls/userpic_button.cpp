@@ -27,6 +27,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "history/history.h"
 #include "calls/calls_instance.h"
 #include "core/application.h"
+#include "yoogram/yoogram_settings.h"
 #include "ui/effects/premium_graphics.h"
 #include "ui/layers/generic_box.h"
 #include "ui/text/text_utilities.h"
@@ -1232,6 +1233,9 @@ void UserpicButton::fillShape(QPainter &p, QBrush brush) const {
 	if (useForumShape()) {
 		const auto radius = size * Ui::ForumUserpicRadiusMultiplier();
 		p.drawRoundedRect(0, 0, size, size, radius, radius);
+	} else if (YooGram::CustomAvatarRadius()) {
+		const auto radius = size * YooGram::UserpicRadiusMultiplier();
+		p.drawRoundedRect(0, 0, size, size, radius, radius);
 	} else {
 		p.drawEllipse(0, 0, size, size);
 	}
@@ -1270,6 +1274,11 @@ void UserpicButton::prepareUserpicPixmap() {
 							std::move(image),
 							Images::CornersMask(size
 								* Ui::ForumUserpicRadiusMultiplier()))
+						: YooGram::CustomAvatarRadius()
+						? Images::Round(
+							std::move(image),
+							Images::CornersMask(size
+								* YooGram::UserpicRadiusMultiplier()))
 						: Images::Circle(std::move(image));
 					image.setDevicePixelRatio(style::DevicePixelRatio());
 					p.drawImage(0, 0, image);

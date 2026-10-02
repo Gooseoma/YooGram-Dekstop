@@ -8,6 +8,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #pragma once
 
 #include "base/flags.h"
+#include "yoogram/yoogram_settings.h"
 
 namespace Ui {
 
@@ -27,7 +28,8 @@ public:
 		return (_flags & Flag::SendImagesAsPhotos) != 0;
 	}
 	[[nodiscard]] bool sendLargePhotos() const {
-		return (_flags & Flag::SendLargePhotos) != 0;
+		return ((_flags & Flag::SendLargePhotos) != 0)
+			|| YooGram::AlwaysHDPhotos();
 	}
 	void setGroupFiles(bool value);
 	void setSendImagesAsPhotos(bool value);

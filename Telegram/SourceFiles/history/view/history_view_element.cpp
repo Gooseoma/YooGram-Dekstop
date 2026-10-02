@@ -68,6 +68,9 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "data/data_message_reactions.h"
 #include "data/data_user.h"
 #include "lang/lang_keys.h"
+#include "data/data_media_types.h"
+#include "data/data_document.h"
+#include "yoogram/yoogram_settings.h"
 #include "styles/style_chat.h"
 #include "styles/style_chat_style.h"
 #include "styles/style_dialogs.h"
@@ -1503,7 +1506,14 @@ bool Element::isTopicRootReply() const {
 }
 
 bool Element::hidesBottomInfo() const {
-	return data()->isWelcomeTemplate();
+	if (data()->isWelcomeTemplate()) {
+		return true;
+	} else if (!YooGram::HideStickerTime()) {
+		return false;
+	}
+	const auto media = data()->media();
+	const auto document = media ? media->document() : nullptr;
+	return document && document->sticker();
 }
 
 int Element::skipBlockWidth() const {

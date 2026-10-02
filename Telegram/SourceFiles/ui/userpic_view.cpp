@@ -10,6 +10,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "ui/empty_userpic.h"
 #include "ui/painter.h"
 #include "ui/image/image_prepare.h"
+#include "yoogram/yoogram_settings.h"
 
 #include <cmath>
 
@@ -32,7 +33,9 @@ constexpr auto kGap = 0.02; // Tunable.
 } // namespace
 
 float64 ForumUserpicRadiusMultiplier() {
-	return 0.3;
+	return YooGram::UnifiedRounding()
+		? YooGram::UserpicRadiusMultiplier()
+		: 0.3;
 }
 
 void PaintCommunityUserpicEffect(
@@ -166,6 +169,12 @@ void ValidateUserpicCache(
 				std::move(view.cached),
 				Images::CornersMask(size
 					* Ui::ForumUserpicRadiusMultiplier()
+					/ style::DevicePixelRatio()));
+		} else if (YooGram::CustomAvatarRadius()) {
+			view.cached = Images::Round(
+				std::move(view.cached),
+				Images::CornersMask(size
+					* YooGram::UserpicRadiusMultiplier()
 					/ style::DevicePixelRatio()));
 		} else {
 			view.cached = Images::Circle(std::move(view.cached));

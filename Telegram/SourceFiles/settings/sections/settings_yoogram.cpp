@@ -14,6 +14,8 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "settings/settings_common.h"
 #include "ui/platform/ui_platform_utility.h"
 #include "ui/vertical_list.h"
+#include "ui/widgets/continuous_sliders.h"
+#include "ui/widgets/labels.h"
 #include "ui/widgets/buttons.h"
 #include "ui/wrap/vertical_layout.h"
 #include "window/window_session_controller.h"
@@ -48,6 +50,47 @@ void AddToggle(
 		button->toggledChanges(
 		) | rpl::on_next(std::move(set), button->lifetime());
 	}
+}
+
+void AddAvatarRadiusSlider(SectionBuilder &builder) {
+	builder.add([](const WidgetContext &ctx) {
+		auto slider = MakeSliderWithLabel(
+			ctx.container,
+			st::settingsScale,
+			st::settingsScaleLabel,
+			st::normalFont->spacew * 2,
+			st::settingsScaleLabel.style.font->width(u"100%"_q),
+			true);
+		const auto raw = slider.slider;
+		const auto label = slider.label;
+		const auto convert = [](int index) {
+			return YooGram::kAvatarRadiusMin + index * 2;
+		};
+		const auto update = [=](int percent) {
+			label->setText(QString::number(percent * 2) + '%');
+		};
+		const auto current = YooGram::AvatarRadiusPercent();
+		update(current);
+		raw->setAccessibleName(tr::lng_yoogram_avatar_radius(tr::now));
+		raw->setPseudoDiscrete(
+			(YooGram::kAvatarRadiusMax - YooGram::kAvatarRadiusMin) / 2 + 1,
+			convert,
+			current,
+			[=](int percent) {
+				update(percent);
+				YooGram::SetAvatarRadiusPercent(percent);
+			});
+		return SectionBuilder::WidgetToAdd{
+			.widget = std::move(slider.widget),
+			.margin = st::settingsScalePadding,
+		};
+	}, [] {
+		return SearchEntry{
+			.id = u"yoogram/avatar_radius"_q,
+			.title = tr::lng_yoogram_avatar_radius(tr::now),
+			.keywords = { u"avatar"_q, u"userpic"_q, u"round"_q, u"circle"_q },
+		};
+	});
 }
 
 void BuildHub(SectionBuilder &builder) {
@@ -136,6 +179,23 @@ void BuildAppearance(SectionBuilder &builder) {
 		rpl::single(Ui::Platform::GlassBackdropSupported()));
 	builder.addSkip();
 	builder.addDividerText(tr::lng_yoogram_glass_menu_about());
+
+	builder.addSkip();
+	builder.addSubsectionTitle({
+		.id = u"yoogram/avatars"_q,
+		.title = tr::lng_yoogram_avatars(),
+		.keywords = { u"avatar"_q, u"userpic"_q, u"round"_q },
+	});
+	AddAvatarRadiusSlider(builder);
+	AddToggle(
+		builder,
+		u"yoogram/unified_rounding"_q,
+		tr::lng_yoogram_unified_rounding(),
+		YooGram::UnifiedRounding(),
+		[](bool value) { YooGram::SetUnifiedRounding(value); },
+		{ u"avatar"_q, u"forum"_q, u"round"_q, u"shape"_q });
+	builder.addSkip();
+	builder.addDividerText(tr::lng_yoogram_avatars_about());
 }
 
 void BuildChats(SectionBuilder &builder) {
@@ -168,8 +228,52 @@ void BuildChats(SectionBuilder &builder) {
 		YooGram::CommaAfterMention(),
 		[](bool value) { YooGram::SetCommaAfterMention(value); },
 		{ u"mention"_q, u"comma"_q, u"username"_q });
+	AddToggle(
+		builder,
+		u"yoogram/hide_tail"_q,
+		tr::lng_yoogram_hide_tail(),
+		YooGram::HideMessageTail(),
+		[](bool value) { YooGram::SetHideMessageTail(value); },
+		{ u"tail"_q, u"bubble"_q, u"message"_q });
+	AddToggle(
+		builder,
+		u"yoogram/edited_icon"_q,
+		tr::lng_yoogram_edited_icon(),
+		YooGram::EditedIcon(),
+		[](bool value) { YooGram::SetEditedIcon(value); },
+		{ u"edited"_q, u"icon"_q, u"pencil"_q });
+	AddToggle(
+		builder,
+		u"yoogram/hide_sticker_time"_q,
+		tr::lng_yoogram_hide_sticker_time(),
+		YooGram::HideStickerTime(),
+		[](bool value) { YooGram::SetHideStickerTime(value); },
+		{ u"sticker"_q, u"time"_q, u"hide"_q });
 	builder.addSkip();
 	builder.addDividerText(tr::lng_yoogram_comma_mention_about());
+
+	builder.addSkip();
+	builder.addSubsectionTitle({
+		.id = u"yoogram/chat_view"_q,
+		.title = tr::lng_yoogram_chat_view(),
+		.keywords = { u"welcome"_q, u"sticker"_q, u"empty"_q, u"photo"_q },
+	});
+	AddToggle(
+		builder,
+		u"yoogram/hide_welcome"_q,
+		tr::lng_yoogram_hide_welcome(),
+		YooGram::HideWelcomeSticker(),
+		[](bool value) { YooGram::SetHideWelcomeSticker(value); },
+		{ u"welcome"_q, u"greeting"_q, u"sticker"_q, u"empty"_q });
+	AddToggle(
+		builder,
+		u"yoogram/always_hd"_q,
+		tr::lng_yoogram_always_hd(),
+		YooGram::AlwaysHDPhotos(),
+		[](bool value) { YooGram::SetAlwaysHDPhotos(value); },
+		{ u"photo"_q, u"hd"_q, u"quality"_q });
+	builder.addSkip();
+	builder.addDividerText(tr::lng_yoogram_chat_view_about());
 }
 
 void BuildOther(SectionBuilder &builder) {
