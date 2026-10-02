@@ -16,6 +16,10 @@ python3 -c "import secrets; print(secrets.token_hex(32))"   # for the secret
 docker compose up -d --build
 ```
 
+The container runs as uid 10001, so the bind-mounted `data/` folder must be
+writable by it. If the container restarts with `unable to open database file`:
+`docker compose down && sudo chown -R 10001:10001 data && docker compose up -d`.
+
 Open `/admin`, sign in, add badges. The page also shows the **public key**:
 embed it in the client. The private key is generated on first start in
 `data/signing_key.pem` (mode 600). Back it up: losing it means shipping a new
