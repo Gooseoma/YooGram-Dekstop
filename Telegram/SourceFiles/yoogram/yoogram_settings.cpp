@@ -72,6 +72,7 @@ private:
 constexpr auto kAvatarRadiusKey = std::string_view("yoogram-avatar-radius");
 constexpr auto kStickerSizeKey = std::string_view("yoogram-sticker-size");
 constexpr auto kDoubleTapSeekKey = std::string_view("yoogram-double-tap-seek");
+constexpr auto kDownloadBoostKey = std::string_view("yoogram-download-boost");
 
 CachedFlag FullNumbersFlag("yoogram-full-numbers", false);
 CachedFlag TimeSecondsFlag("yoogram-time-seconds", false);
@@ -88,6 +89,8 @@ CachedFlag ShowBadgesFlag("yoogram-show-badges", true);
 CachedFlag SaveDeletedFlag("yoogram-save-deleted", false);
 CachedFlag OnlineIndicatorFlag("yoogram-online-indicator", false);
 CachedFlag PlainRepliesFlag("yoogram-plain-replies", false);
+CachedFlag UploadBoostFlag("yoogram-upload-boost", false);
+std::atomic<int> ActiveBoost = 0;
 std::atomic<int> StickerSize = kStickerSizeDefault;
 std::atomic<int> DoubleTapSeek = 0;
 std::atomic<int> AvatarRadius = kAvatarRadiusMax;
@@ -254,6 +257,26 @@ void SetMessageOnlineIndicator(bool enabled) {
 	OnlineIndicatorFlag.set(enabled);
 }
 
+int DownloadBoost() {
+	return ReadInt(kDownloadBoostKey, 0, 0, kDownloadBoostMax);
+}
+
+void SetDownloadBoost(int mode) {
+	WriteInt(kDownloadBoostKey, std::clamp(mode, 0, kDownloadBoostMax));
+}
+
+int ActiveDownloadBoost() {
+	return ActiveBoost.load(std::memory_order_relaxed);
+}
+
+bool UploadBoost() {
+	return UploadBoostFlag.value();
+}
+
+void SetUploadBoost(bool enabled) {
+	UploadBoostFlag.set(enabled);
+}
+
 bool PlainReplies() {
 	return PlainRepliesFlag.value();
 }
@@ -325,6 +348,8 @@ void LoadRuntimeSettings() {
 	SaveDeletedFlag.load();
 	OnlineIndicatorFlag.load();
 	PlainRepliesFlag.load();
+	UploadBoostFlag.load();
+	ActiveBoost.store(DownloadBoost(), std::memory_order_relaxed);
 	DoubleTapSeek.store(
 		ReadInt(kDoubleTapSeekKey, 0, 0, 60),
 		std::memory_order_relaxed);

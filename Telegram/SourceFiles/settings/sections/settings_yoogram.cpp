@@ -188,6 +188,52 @@ void AddDoubleTapSeek(SectionBuilder &builder) {
 	});
 }
 
+[[nodiscard]] QString DownloadBoostText(int mode) {
+	switch (mode) {
+	case 1: return tr::lng_yoogram_boost_fast(tr::now);
+	case 2: return tr::lng_yoogram_boost_ultra(tr::now);
+	}
+	return tr::lng_yoogram_boost_default(tr::now);
+}
+
+void AddDownloadBoost(SectionBuilder &builder) {
+	builder.add([](const WidgetContext &ctx) {
+		const auto controller = ctx.controller;
+		const auto value = ctx.container->lifetime().make_state<
+			rpl::variable<int>
+		>(YooGram::DownloadBoost());
+		const auto button = AddButtonWithLabel(
+			ctx.container,
+			tr::lng_yoogram_download_boost(),
+			value->value() | rpl::map(DownloadBoostText),
+			st::settingsButtonNoIcon);
+		button->addClickHandler([=] {
+			controller->show(Box([=](not_null<Ui::GenericBox*> box) {
+				auto options = std::vector<QString>();
+				for (auto mode = 0; mode <= YooGram::kDownloadBoostMax; ++mode) {
+					options.push_back(DownloadBoostText(mode));
+				}
+				SingleChoiceBox(box, {
+					.title = tr::lng_yoogram_download_boost(),
+					.options = options,
+					.initialSelection = value->current(),
+					.callback = [=](int index) {
+						*value = index;
+						YooGram::SetDownloadBoost(index);
+					},
+				});
+			}));
+		});
+		return SectionBuilder::WidgetToAdd{};
+	}, [] {
+		return SearchEntry{
+			.id = u"yoogram/download_boost"_q,
+			.title = tr::lng_yoogram_download_boost(tr::now),
+			.keywords = { u"download"_q, u"speed"_q, u"fast"_q },
+		};
+	});
+}
+
 void ShowDeletedLog(not_null<Window::SessionController*> controller) {
 	const auto account = controller->session().userId().bare;
 	controller->show(Box([=](not_null<Ui::GenericBox*> box) {
@@ -278,6 +324,23 @@ void BuildHub(SectionBuilder &builder) {
 }
 
 void BuildMain(SectionBuilder &builder) {
+	builder.addSkip();
+	builder.addSubsectionTitle({
+		.id = u"yoogram/speed"_q,
+		.title = tr::lng_yoogram_speed(),
+		.keywords = { u"download"_q, u"upload"_q, u"speed"_q },
+	});
+	AddDownloadBoost(builder);
+	AddToggle(
+		builder,
+		u"yoogram/upload_boost"_q,
+		tr::lng_yoogram_upload_boost(),
+		YooGram::UploadBoost(),
+		[](bool value) { YooGram::SetUploadBoost(value); },
+		{ u"upload"_q, u"send"_q, u"speed"_q, u"fast"_q });
+	builder.addSkip();
+	builder.addDividerText(tr::lng_yoogram_speed_about());
+
 	builder.addSkip();
 	builder.addSubsectionTitle({
 		.id = u"yoogram/deleted"_q,

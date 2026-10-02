@@ -79,6 +79,17 @@ void SetSaveDeletedMessages(bool enabled);
 [[nodiscard]] bool MessageOnlineIndicator();
 void SetMessageOnlineIndicator(bool enabled);
 
+// Faster downloads: 0 - default, 1 - fast, 2 - ultra. Changing it takes
+// effect after a restart, ActiveDownloadBoost() is what the process started with.
+inline constexpr auto kDownloadBoostMax = 2;
+[[nodiscard]] int DownloadBoost();
+void SetDownloadBoost(int mode);
+[[nodiscard]] int ActiveDownloadBoost();
+
+// Faster uploads: bigger parts and more data in flight.
+[[nodiscard]] bool UploadBoost();
+void SetUploadBoost(bool enabled);
+
 // Replies use the default accent: no peer colors, emoji or background.
 [[nodiscard]] bool PlainReplies();
 void SetPlainReplies(bool enabled);
