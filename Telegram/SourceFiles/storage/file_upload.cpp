@@ -31,6 +31,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "main/main_session.h"
 #include "storage/storage_account.h"
 #include "apiwrap.h"
+#include "yoogram/yoogram_settings.h"
 
 #include <QtCore/QFileInfo>
 
@@ -67,6 +68,14 @@ constexpr auto kKillSessionTimeout = 15 * crl::time(1000);
 constexpr auto kWaitForNormalizeTimeout = 8 * crl::time(1000);
 
 constexpr auto kMaxSessionsCount = 8;
+
+// YooGram: with the upload boost we keep more data in flight per session.
+[[nodiscard]] int MaxUploadPerSession() {
+	return YooGram::UploadBoost()
+		? (4 * kMaxUploadPerSession)
+		: kMaxUploadPerSession;
+}
+
 constexpr auto kFastRequestThreshold = 1 * crl::time(1000);
 constexpr auto kSlowRequestThreshold = 8 * crl::time(1000);
 
@@ -149,6 +158,11 @@ void Uploader::Entry::setDocSize(int64 size) {
 	docSize = size;
 	constexpr auto limit0 = 1024 * 1024;
 	constexpr auto limit1 = 32 * limit0;
+	if (YooGram::UploadBoost() && docSize >= limit0) {
+		// The biggest allowed part size means the fewest requests.
+		setPartSize(kDocumentUploadPartSize4);
+		return;
+	}
 	if (docSize >= limit0 || !setPartSize(kDocumentUploadPartSize0)) {
 		if (docSize > limit1 || !setPartSize(kDocumentUploadPartSize1)) {
 			if (!setPartSize(kDocumentUploadPartSize2)) {
@@ -797,7 +811,7 @@ auto Uploader::sendDocPart(not_null<Entry*> entry, uchar dcIndex)
 	const auto itemId = entry->itemId;
 	const auto alreadySent = _sentPerDcIndex[dcIndex];
 	const auto willProbablyBeSent = entry->docPartSize;
-	if (alreadySent + willProbablyBeSent > kMaxUploadPerSession) {
+	if (alreadySent + willProbablyBeSent > MaxUploadPerSession()) {
 		return SendResult::DcIndexFull;
 	}
 
@@ -843,7 +857,7 @@ auto Uploader::sendSlicedPart(not_null<Entry*> entry, uchar dcIndex)
 	const auto itemId = entry->itemId;
 	const auto alreadySent = _sentPerDcIndex[dcIndex];
 	const auto willBeSent = entry->parts->at(entry->partsSent).size();
-	if (alreadySent + willBeSent >= kMaxUploadPerSession) {
+	if (alreadySent + willBeSent >= MaxUploadPerSession()) {
 		return SendResult::DcIndexFull;
 	}
 

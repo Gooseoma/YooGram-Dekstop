@@ -902,6 +902,13 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 "lng_yoogram_force_snow" = "Always show snow";
 "lng_yoogram_hide_stories" = "Hide stories";
 "lng_yoogram_folders" = "Chat folders";
+"lng_yoogram_speed" = "Speed";
+"lng_yoogram_download_boost" = "Faster downloads";
+"lng_yoogram_boost_default" = "Default";
+"lng_yoogram_boost_fast" = "Fast";
+"lng_yoogram_boost_ultra" = "Ultra";
+"lng_yoogram_upload_boost" = "Faster uploads";
+"lng_yoogram_speed_about" = "Fast and Ultra open more connections to Telegram servers and request more data at once. Ultra may be unstable on a weak connection. A new download mode applies after a restart, faster uploads apply right away.";
 "lng_yoogram_deleted" = "Deleted messages";
 "lng_yoogram_save_deleted" = "Save deleted messages";
 "lng_yoogram_save_deleted_about" = "Messages deleted by the other side or by admins stay in the chat with a trash mark while the chat stays loaded. A copy of the text is also saved to a log that survives a restart. You can still delete a kept message yourself from its menu.";
@@ -910,7 +917,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 "lng_yoogram_deleted_log_clear" = "Clear";
 "lng_yoogram_badges" = "Badges";
 "lng_yoogram_show_badges" = "Show YooGram badges";
-"lng_yoogram_show_badges_about" = "Shows badges issued by the YooGram server in profiles instead of the Premium status. The list is downloaded from the server and checked by its signature, so only the server owner can change it. Disabling this stops the requests.";
+"lng_yoogram_show_badges_about" = "Shows badges issued by the YooGram server in profiles, in the chat list and next to names in messages (in profiles they replace the Premium status). The list is downloaded from the server and checked by its signature, so only the server owner can change it. Disabling this stops the requests.";
 "lng_yoogram_hide_folder_counters" = "Hide unread counters on folders";
 "lng_yoogram_folders_about" = "Removes the unread badges from the folder tabs and the folder sidebar. The change applies when the counters next update.";
 "lng_yoogram_chat_list_about" = "Snow is shown in the header of the side menu. Hiding stories applies after a restart.";
@@ -928,6 +935,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 "lng_yoogram_edited_icon" = "Edited mark as an icon";
 "lng_yoogram_hide_sticker_time" = "Hide time on stickers";
 "lng_yoogram_online_indicator" = "Show online indicator on avatars";
+"lng_yoogram_plain_replies" = "Plain replies (no colors, emoji or background)";
 "lng_yoogram_chat_view" = "Chat view";
 "lng_yoogram_hide_welcome" = "Hide welcome sticker";
 "lng_yoogram_always_hd" = "Always send photos in HD";

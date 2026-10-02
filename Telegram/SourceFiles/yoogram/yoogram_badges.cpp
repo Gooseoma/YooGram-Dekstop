@@ -250,6 +250,20 @@ std::optional<CustomBadge> LookupBadge(uint64 userId) {
 		: std::nullopt;
 }
 
+int BadgesVersion() {
+	return Get().counter;
+}
+
+QString NameBadgeSuffix(uint64 userId) {
+	const auto badge = LookupBadge(userId);
+	if (!badge) {
+		return QString();
+	}
+	return badge->label
+		? (u" ["_q + badge->text + ']')
+		: (u" "_q + badge->text);
+}
+
 rpl::producer<int> BadgesVersionValue() {
 	auto &state = Get();
 	return state.changed.events_starting_with(int(state.counter));
