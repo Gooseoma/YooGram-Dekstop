@@ -99,6 +99,10 @@ void Badge::setContent(Content content) {
 			return tr::lng_fake_badge(tr::now);
 		case BadgeType::Direct:
 			return tr::lng_direct_badge(tr::now);
+		case BadgeType::YooGram:
+			return _content.custom.tooltip.isEmpty()
+				? _content.custom.text
+				: _content.custom.tooltip;
 		}
 		Unexpected("badge type");
 	}());
@@ -208,9 +212,42 @@ void Badge::setContent(Content content) {
 						: st::attentionButtonFg));
 			}, _view->lifetime());
 	} break;
+	case BadgeType::YooGram: {
+		const auto custom = _content.custom;
+		const auto &font = st::semiboldFont;
+		const auto skip = st::infoVerifiedCheckPosition.x();
+		const auto padding = custom.label ? skip : 0;
+		const auto radius = skip * 2;
+		_view->resize(
+			font->width(custom.text) + 2 * (skip + padding),
+			font->height + 2 * (skip + (custom.label ? 1 : 0)));
+		_view->paintRequest(
+		) | rpl::on_next([=, badge = _view.data()] {
+			Painter p(badge);
+			const auto inner = badge->rect().marginsRemoved(
+				{ skip, skip, skip, skip });
+			p.setFont(font);
+			if (custom.label) {
+				PainterHighQualityEnabler hq(p);
+				auto background = custom.color;
+				background.setAlpha(48);
+				p.setPen(Qt::NoPen);
+				p.setBrush(background);
+				p.drawRoundedRect(inner, radius, radius);
+				p.setPen(custom.color);
+			}
+			p.drawText(inner, Qt::AlignCenter, custom.text);
+		}, _view->lifetime());
+	} break;
 	}
 
-	if (!HasPremiumClick(_content) || !_premiumClickCallback) {
+	if (_content.badge == BadgeType::YooGram) {
+		if (_content.custom.tooltip.isEmpty()) {
+			_view->setAttribute(Qt::WA_TransparentForMouseEvents);
+		} else {
+			_view->setToolTip(_content.custom.tooltip);
+		}
+	} else if (!HasPremiumClick(_content) || !_premiumClickCallback) {
 		_view->setAttribute(Qt::WA_TransparentForMouseEvents);
 	} else {
 		_view->setClickedCallback(_premiumClickCallback);
@@ -278,8 +315,22 @@ rpl::producer<Badge::Content> BadgeContentForPeer(not_null<PeerData*> peer) {
 	const auto statusOnlyForPremium = peer->isUser();
 	return rpl::combine(
 		BadgeValue(peer),
-		EmojiStatusIdValue(peer)
-	) | rpl::map([=](BadgeType badge, EmojiStatusId emojiStatusId) {
+		EmojiStatusIdValue(peer),
+		::YooGram::BadgesVersionValue()
+	) | rpl::map([=](
+			BadgeType badge,
+			EmojiStatusId emojiStatusId,
+			int) {
+		if (const auto user = peer->asUser()) {
+			// A badge issued by the YooGram server replaces the status.
+			if (const auto custom = ::YooGram::LookupBadge(
+					peerToUser(user->id).bare)) {
+				return Badge::Content{
+					.badge = BadgeType::YooGram,
+					.custom = *custom,
+				};
+			}
+		}
 		if (emojiStatusId.collectible && (badge == BadgeType::Verified)) {
 			return Badge::Content{ BadgeType::Premium, emojiStatusId };
 		}

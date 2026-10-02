@@ -67,6 +67,10 @@ void SetHideStories(bool enabled);
 [[nodiscard]] bool HideFolderCounters();
 void SetHideFolderCounters(bool enabled);
 
+// Show badges issued by the YooGram badge server in profiles.
+[[nodiscard]] bool ShowBadges();
+void SetShowBadges(bool enabled);
+
 // Sticker size step like on Android: kStickerSizeDefault is the normal size.
 [[nodiscard]] int StickerSizeStep();
 void SetStickerSizeStep(int step);

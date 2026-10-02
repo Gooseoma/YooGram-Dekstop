@@ -250,6 +250,22 @@ void BuildMain(SectionBuilder &builder) {
 		{ u"phone"_q, u"number"_q, u"hide"_q });
 	builder.addSkip();
 	builder.addDividerText(tr::lng_yoogram_hide_phone_about());
+
+	builder.addSkip();
+	builder.addSubsectionTitle({
+		.id = u"yoogram/badges"_q,
+		.title = tr::lng_yoogram_badges(),
+		.keywords = { u"badge"_q, u"icon"_q, u"profile"_q },
+	});
+	AddToggle(
+		builder,
+		u"yoogram/show_badges"_q,
+		tr::lng_yoogram_show_badges(),
+		YooGram::ShowBadges(),
+		[](bool value) { YooGram::SetShowBadges(value); },
+		{ u"badge"_q, u"icon"_q, u"profile"_q, u"developer"_q });
+	builder.addSkip();
+	builder.addDividerText(tr::lng_yoogram_show_badges_about());
 }
 
 void BuildAppearance(SectionBuilder &builder) {

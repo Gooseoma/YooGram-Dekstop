@@ -902,6 +902,9 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 "lng_yoogram_force_snow" = "Always show snow";
 "lng_yoogram_hide_stories" = "Hide stories";
 "lng_yoogram_folders" = "Chat folders";
+"lng_yoogram_badges" = "Badges";
+"lng_yoogram_show_badges" = "Show YooGram badges";
+"lng_yoogram_show_badges_about" = "Shows badges issued by the YooGram server in profiles instead of the Premium status. The list is downloaded from the server and checked by its signature, so only the server owner can change it. Disabling this stops the requests.";
 "lng_yoogram_hide_folder_counters" = "Hide unread counters on folders";
 "lng_yoogram_folders_about" = "Removes the unread badges from the folder tabs and the folder sidebar. The change applies when the counters next update.";
 "lng_yoogram_chat_list_about" = "Snow is shown in the header of the side menu. Hiding stories applies after a restart.";
