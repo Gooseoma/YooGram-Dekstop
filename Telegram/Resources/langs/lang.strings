@@ -904,7 +904,10 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 "lng_yoogram_folders" = "Chat folders";
 "lng_yoogram_deleted" = "Deleted messages";
 "lng_yoogram_save_deleted" = "Save deleted messages";
-"lng_yoogram_save_deleted_about" = "Messages deleted by the other side or by admins stay in the chat with a trash mark. They are kept only while the chat stays loaded and until the app is closed. You can still delete them yourself from the message menu.";
+"lng_yoogram_save_deleted_about" = "Messages deleted by the other side or by admins stay in the chat with a trash mark while the chat stays loaded. A copy of the text is also saved to a log that survives a restart. You can still delete a kept message yourself from its menu.";
+"lng_yoogram_deleted_log" = "Deleted messages log";
+"lng_yoogram_deleted_log_empty" = "No deleted messages saved yet.";
+"lng_yoogram_deleted_log_clear" = "Clear";
 "lng_yoogram_badges" = "Badges";
 "lng_yoogram_show_badges" = "Show YooGram badges";
 "lng_yoogram_show_badges_about" = "Shows badges issued by the YooGram server in profiles instead of the Premium status. The list is downloaded from the server and checked by its signature, so only the server owner can change it. Disabling this stops the requests.";
