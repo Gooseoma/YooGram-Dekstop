@@ -2191,6 +2191,10 @@ PRIVATE
     window/themes/window_themes_embedded.h
     window/themes/window_themes_generate_name.cpp
     window/themes/window_themes_generate_name.h
+    yoogram/yoogram_badges.cpp
+    yoogram/yoogram_badges.h
+    yoogram/yoogram_deleted.cpp
+    yoogram/yoogram_deleted.h
     yoogram/yoogram_format.cpp
     yoogram/yoogram_format.h
     yoogram/yoogram_moderation.cpp

@@ -9,6 +9,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 
 #include "base/flags.h"
 #include "base/object_ptr.h"
+#include "yoogram/yoogram_badges.h"
 
 namespace style {
 struct InfoPeerBadge;
@@ -43,6 +44,7 @@ enum class BadgeType : uchar {
 	Scam = 0x08,
 	Fake = 0x10,
 	Direct = 0x20,
+	YooGram = 0x40,
 };
 inline constexpr bool is_flag_type(BadgeType) { return true; }
 
@@ -51,6 +53,7 @@ public:
 	struct Content {
 		BadgeType badge = BadgeType::None;
 		EmojiStatusId emojiStatusId;
+		::YooGram::CustomBadge custom;
 
 		friend inline bool operator==(Content, Content) = default;
 	};

@@ -9,6 +9,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 
 #include "core/application.h"
 #include "core/core_settings.h"
+#include "yoogram/yoogram_badges.h"
 #include "ui/widgets/popup_menu.h"
 
 #include <QtGui/QImage>
@@ -83,6 +84,8 @@ CachedFlag UnifiedRoundingFlag("yoogram-unified-rounding", false);
 CachedFlag ForceSnowFlag("yoogram-force-snow", false);
 CachedFlag HideStoriesFlag("yoogram-hide-stories", false);
 CachedFlag HideFolderCountersFlag("yoogram-hide-folder-counters", false);
+CachedFlag ShowBadgesFlag("yoogram-show-badges", true);
+CachedFlag SaveDeletedFlag("yoogram-save-deleted", false);
 std::atomic<int> StickerSize = kStickerSizeDefault;
 std::atomic<int> DoubleTapSeek = 0;
 std::atomic<int> AvatarRadius = kAvatarRadiusMax;
@@ -224,6 +227,23 @@ void SetHideFolderCounters(bool enabled) {
 	HideFolderCountersFlag.set(enabled);
 }
 
+bool ShowBadges() {
+	return ShowBadgesFlag.value();
+}
+
+void SetShowBadges(bool enabled) {
+	ShowBadgesFlag.set(enabled);
+	BadgesSettingChanged();
+}
+
+bool SaveDeletedMessages() {
+	return SaveDeletedFlag.value();
+}
+
+void SetSaveDeletedMessages(bool enabled) {
+	SaveDeletedFlag.set(enabled);
+}
+
 int StickerSizeStep() {
 	return StickerSize.load(std::memory_order_relaxed);
 }
@@ -283,10 +303,13 @@ void LoadRuntimeSettings() {
 	ForceSnowFlag.load();
 	HideStoriesFlag.load();
 	HideFolderCountersFlag.load();
+	ShowBadgesFlag.load();
+	SaveDeletedFlag.load();
 	DoubleTapSeek.store(
 		ReadInt(kDoubleTapSeekKey, 0, 0, 60),
 		std::memory_order_relaxed);
 	ApplyGlassMenuSetting();
+	StartBadges();
 }
 
 } // namespace YooGram

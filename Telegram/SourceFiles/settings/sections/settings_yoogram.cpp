@@ -21,9 +21,14 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "ui/widgets/buttons.h"
 #include "ui/wrap/vertical_layout.h"
 #include "window/window_session_controller.h"
+#include "yoogram/yoogram_deleted.h"
 #include "yoogram/yoogram_settings.h"
+#include "styles/style_layers.h"
 #include "styles/style_menu_icons.h"
 #include "styles/style_settings.h"
+
+#include <QtCore/QDateTime>
+#include <QtCore/QLocale>
 
 #include <algorithm>
 
@@ -183,6 +188,67 @@ void AddDoubleTapSeek(SectionBuilder &builder) {
 	});
 }
 
+void ShowDeletedLog(not_null<Window::SessionController*> controller) {
+	const auto account = controller->session().userId().bare;
+	controller->show(Box([=](not_null<Ui::GenericBox*> box) {
+		box->setTitle(tr::lng_yoogram_deleted_log());
+		box->addButton(tr::lng_close(), [=] { box->closeBox(); });
+		box->addLeftButton(tr::lng_yoogram_deleted_log_clear(), [=] {
+			YooGram::ClearDeletedLog(account);
+			box->closeBox();
+		});
+		const auto records = YooGram::LoadDeletedLog(account);
+		if (records.empty()) {
+			box->addRow(object_ptr<Ui::FlatLabel>(
+				box,
+				tr::lng_yoogram_deleted_log_empty(tr::now),
+				st::boxLabel));
+			return;
+		}
+		constexpr auto kMaxShown = 200;
+		auto shown = 0;
+		for (const auto &record : records) {
+			if (++shown > kMaxShown) {
+				break;
+			}
+			const auto when = QLocale().toString(
+				QDateTime::fromSecsSinceEpoch(record.date),
+				QLocale::ShortFormat);
+			const auto header = record.chatName.isEmpty()
+				? record.fromName
+				: (record.fromName.isEmpty()
+					|| record.fromName == record.chatName)
+				? record.chatName
+				: (record.chatName + u" \u2014 "_q + record.fromName);
+			box->addRow(object_ptr<Ui::FlatLabel>(
+				box,
+				header + u", "_q + when + '\n' + record.text,
+				st::boxLabel));
+		}
+	}));
+}
+
+void AddDeletedLogButton(SectionBuilder &builder) {
+	builder.add([](const WidgetContext &ctx) {
+		const auto controller = ctx.controller;
+		const auto button = AddButtonWithLabel(
+			ctx.container,
+			tr::lng_yoogram_deleted_log(),
+			rpl::single(QString()),
+			st::settingsButtonNoIcon);
+		button->addClickHandler([=] {
+			ShowDeletedLog(controller);
+		});
+		return SectionBuilder::WidgetToAdd{};
+	}, [] {
+		return SearchEntry{
+			.id = u"yoogram/deleted_log"_q,
+			.title = tr::lng_yoogram_deleted_log(tr::now),
+			.keywords = { u"deleted"_q, u"log"_q, u"messages"_q },
+		};
+	});
+}
+
 void BuildHub(SectionBuilder &builder) {
 	builder.addSkip();
 	builder.addSectionButton({
@@ -212,6 +278,23 @@ void BuildHub(SectionBuilder &builder) {
 }
 
 void BuildMain(SectionBuilder &builder) {
+	builder.addSkip();
+	builder.addSubsectionTitle({
+		.id = u"yoogram/deleted"_q,
+		.title = tr::lng_yoogram_deleted(),
+		.keywords = { u"deleted"_q, u"messages"_q, u"save"_q },
+	});
+	AddToggle(
+		builder,
+		u"yoogram/save_deleted"_q,
+		tr::lng_yoogram_save_deleted(),
+		YooGram::SaveDeletedMessages(),
+		[](bool value) { YooGram::SetSaveDeletedMessages(value); },
+		{ u"deleted"_q, u"messages"_q, u"save"_q, u"keep"_q });
+	AddDeletedLogButton(builder);
+	builder.addSkip();
+	builder.addDividerText(tr::lng_yoogram_save_deleted_about());
+
 	builder.addSkip();
 	builder.addSubsectionTitle({
 		.id = u"yoogram/numbers_time"_q,
@@ -250,6 +333,22 @@ void BuildMain(SectionBuilder &builder) {
 		{ u"phone"_q, u"number"_q, u"hide"_q });
 	builder.addSkip();
 	builder.addDividerText(tr::lng_yoogram_hide_phone_about());
+
+	builder.addSkip();
+	builder.addSubsectionTitle({
+		.id = u"yoogram/badges"_q,
+		.title = tr::lng_yoogram_badges(),
+		.keywords = { u"badge"_q, u"icon"_q, u"profile"_q },
+	});
+	AddToggle(
+		builder,
+		u"yoogram/show_badges"_q,
+		tr::lng_yoogram_show_badges(),
+		YooGram::ShowBadges(),
+		[](bool value) { YooGram::SetShowBadges(value); },
+		{ u"badge"_q, u"icon"_q, u"profile"_q, u"developer"_q });
+	builder.addSkip();
+	builder.addDividerText(tr::lng_yoogram_show_badges_about());
 }
 
 void BuildAppearance(SectionBuilder &builder) {
