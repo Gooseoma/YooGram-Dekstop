@@ -10,6 +10,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "core/credits_amount.h"
 #include "lang/lang_keys.h"
 #include "ui/text/text.h"
+#include "yoogram/yoogram_settings.h"
 #include "base/qt/qt_common_adapters.h"
 #include "base/qt/qt_string_view.h"
 
@@ -918,6 +919,12 @@ int NonZeroPartToInt(QString value) {
 }
 
 ShortenedCount FormatCountToShort(int64 number, bool onlyK) {
+	if (YooGram::FullNumbers()) {
+		return ShortenedCount{
+			.number = number,
+			.string = FormatCountDecimal(number),
+		};
+	}
 	auto result = ShortenedCount{ number };
 	const auto abs = std::abs(number);
 	const auto shorten = [&](int64 divider, char multiplier) {

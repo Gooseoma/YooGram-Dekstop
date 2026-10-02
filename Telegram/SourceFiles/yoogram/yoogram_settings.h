@@ -16,4 +16,19 @@ void SetQuickModerationEnabled(bool enabled);
 void SetGlassMenuEnabled(bool enabled);
 void ApplyGlassMenuSetting();
 
+[[nodiscard]] bool FullNumbers();
+void SetFullNumbers(bool enabled);
+
+[[nodiscard]] bool TimeWithSeconds();
+void SetTimeWithSeconds(bool enabled);
+
+[[nodiscard]] bool HidePhoneNumber();
+void SetHidePhoneNumber(bool enabled);
+
+[[nodiscard]] bool CommaAfterMention();
+void SetCommaAfterMention(bool enabled);
+
+// Reads the saved values into the caches used by hot formatting paths.
+void LoadRuntimeSettings();
+
 } // namespace YooGram

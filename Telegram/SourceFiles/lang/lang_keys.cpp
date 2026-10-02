@@ -6,6 +6,7 @@ For license and copyright information please follow this link:
 https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 */
 #include "lang/lang_keys.h"
+#include "yoogram/yoogram_format.h"
 
 #include "base/const_string.h"
 #include "lang/lang_file_parser.h"
@@ -193,7 +194,7 @@ QString langDateTime(const QDateTime &date) {
 		lt_date,
 		langDayOfMonth(date.date()),
 		lt_time,
-		QLocale().toString(date.time(), QLocale::ShortFormat));
+		YooGram::FormatTime(date.time()));
 }
 
 QString langDateTimeFull(const QDateTime &date) {
@@ -202,7 +203,7 @@ QString langDateTimeFull(const QDateTime &date) {
 		lt_date,
 		langDayOfMonthFull(date.date()),
 		lt_time,
-		QLocale().toString(date.time(), QLocale::ShortFormat));
+		YooGram::FormatTime(date.time()));
 }
 
 namespace Lang {

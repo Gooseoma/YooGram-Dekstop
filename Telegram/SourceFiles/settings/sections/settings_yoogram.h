@@ -11,7 +11,16 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 
 namespace Settings {
 
-class YooGramSection : public Section<YooGramSection> {
+enum class YooGramPage {
+	Hub,
+	Main,
+	Appearance,
+	Chats,
+	Other,
+};
+
+template <YooGramPage Page>
+class YooGramSection : public Section<YooGramSection<Page>> {
 public:
 	YooGramSection(
 		QWidget *parent,

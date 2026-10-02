@@ -54,6 +54,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "settings/sections/settings_credits.h"
 #include "settings/sections/settings_folders.h"
 #include "settings/sections/settings_yoogram.h"
+#include "yoogram/yoogram_settings.h"
 #include "settings/sections/settings_information.h"
 #include "settings/sections/settings_notifications.h"
 #include "settings/settings_power_saving.h"
@@ -366,6 +367,18 @@ void BuildSectionButtons(SectionBuilder &builder) {
 	const auto controller = builder.controller();
 	const auto showOther = builder.showOther();
 
+	builder.addSectionButton({
+		.title = tr::lng_settings_yoogram(),
+		.targetSection = YooGramId(),
+		.icon = { &st::menuIconYooGram },
+		.keywords = {
+			u"yoogram"_q,
+			u"mod"_q,
+			u"glass"_q,
+			u"moderation"_q,
+		},
+	});
+
 	if (!session->supportMode()) {
 		builder.addSectionButton({
 			.title = tr::lng_settings_my_account(),
@@ -429,13 +442,6 @@ void BuildSectionButtons(SectionBuilder &builder) {
 			.shown = std::move(shownProducer),
 		});
 	}
-
-	builder.addSectionButton({
-		.title = tr::lng_settings_yoogram(),
-		.targetSection = YooGramId(),
-		.icon = { &st::menuIconBoosts },
-		.keywords = { u"yoogram"_q, u"moderation"_q, u"mute"_q, u"ban"_q },
-	});
 
 	builder.addSectionButton({
 		.title = tr::lng_settings_advanced(),
@@ -850,8 +856,9 @@ void SetupValidatePhoneNumberSuggestion(
 		content,
 		tr::lng_settings_suggestion_phone_number_title(
 			lt_phone,
-			rpl::single(
-				Ui::FormatPhone(controller->session().user()->phone()))),
+			rpl::single(YooGram::HidePhoneNumber()
+				? tr::lng_info_mobile_hidden(tr::now)
+				: Ui::FormatPhone(controller->session().user()->phone()))),
 		QMargins(
 			st::boxRowPadding.left()
 				- st::defaultSubsectionTitlePadding.left(),
