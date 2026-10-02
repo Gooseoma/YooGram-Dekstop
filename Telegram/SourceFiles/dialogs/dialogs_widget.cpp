@@ -95,6 +95,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "info/profile/info_profile_values.h"
 #include "info/info_memento.h"
 #include "inline_bots/bot_attach_web_view.h"
+#include "yoogram/yoogram_settings.h"
 #include "styles/style_dialogs.h"
 #include "styles/style_chat.h"
 #include "styles/style_chat_helpers.h"
@@ -1727,9 +1728,13 @@ void Widget::setupStories() {
 		});
 	}
 
-	_storiesContents.fire(Stories::ContentForSession(
-		&controller()->session(),
-		Data::StorySourcesList::NotHidden));
+	if (YooGram::HideStories()) {
+		_storiesContents.fire(rpl::single(Stories::Content()));
+	} else {
+		_storiesContents.fire(Stories::ContentForSession(
+			&controller()->session(),
+			Data::StorySourcesList::NotHidden));
+	}
 
 	const auto currentSource = [=] {
 		using List = Data::StorySourcesList;

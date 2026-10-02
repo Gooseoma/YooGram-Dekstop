@@ -898,6 +898,12 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 "lng_yoogram_support" = "Support";
 "lng_yoogram_github" = "GitHub";
 "lng_yoogram_github_about" = "Source code, updates and bug reports.";
+"lng_yoogram_chat_list" = "Chat list";
+"lng_yoogram_force_snow" = "Always show snow";
+"lng_yoogram_hide_stories" = "Hide stories";
+"lng_yoogram_chat_list_about" = "Snow is shown in the header of the side menu. Hiding stories applies after a restart.";
+"lng_yoogram_sticker_size" = "Sticker size";
+"lng_yoogram_sticker_size_about" = "14 is the normal size, as in the Android app. Applies to chats you open afterwards.";
 "lng_yoogram_avatars" = "Avatars";
 "lng_yoogram_avatar_radius" = "Avatar rounding";
 "lng_yoogram_unified_rounding" = "Same shape for forums";

@@ -8,6 +8,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "history/view/media/history_view_sticker.h"
 
 #include "base/options.h"
+#include "yoogram/yoogram_settings.h"
 #include "boxes/sticker_set_box.h"
 #include "history/history.h"
 #include "history/history_item_components.h"
@@ -198,6 +199,14 @@ bool Sticker::readyToDrawAnimationFrame() {
 }
 
 QSize Sticker::Size() {
+	const auto step = YooGram::StickerSizeStep();
+	if (step != YooGram::kStickerSizeDefault) {
+		const auto scaled = std::clamp(
+			st::maxStickerSize * step / YooGram::kStickerSizeDefault,
+			style::ConvertScale(32),
+			kMaxSizeFixed);
+		return { scaled, scaled };
+	}
 	const auto side = std::min(st::maxStickerSize, kMaxSizeFixed);
 	if (OptionStickerSize.value() > 0) [[unlikely]] {
 		const auto scaled = std::clamp(

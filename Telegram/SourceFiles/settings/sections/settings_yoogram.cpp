@@ -93,6 +93,41 @@ void AddAvatarRadiusSlider(SectionBuilder &builder) {
 	});
 }
 
+void AddStickerSizeSlider(SectionBuilder &builder) {
+	builder.add([](const WidgetContext &ctx) {
+		auto slider = MakeSliderWithLabel(
+			ctx.container,
+			st::settingsScale,
+			st::settingsScaleLabel,
+			st::normalFont->spacew * 2,
+			st::settingsScaleLabel.style.font->width(u"20"_q),
+			true);
+		const auto raw = slider.slider;
+		const auto label = slider.label;
+		const auto current = YooGram::StickerSizeStep();
+		label->setText(QString::number(current));
+		raw->setAccessibleName(tr::lng_yoogram_sticker_size(tr::now));
+		raw->setPseudoDiscrete(
+			YooGram::kStickerSizeMax - YooGram::kStickerSizeMin + 1,
+			[](int index) { return YooGram::kStickerSizeMin + index; },
+			current,
+			[=](int step) {
+				label->setText(QString::number(step));
+				YooGram::SetStickerSizeStep(step);
+			});
+		return SectionBuilder::WidgetToAdd{
+			.widget = std::move(slider.widget),
+			.margin = st::settingsScalePadding,
+		};
+	}, [] {
+		return SearchEntry{
+			.id = u"yoogram/sticker_size"_q,
+			.title = tr::lng_yoogram_sticker_size(tr::now),
+			.keywords = { u"sticker"_q, u"size"_q },
+		};
+	});
+}
+
 void BuildHub(SectionBuilder &builder) {
 	builder.addSkip();
 	builder.addSectionButton({
@@ -196,6 +231,29 @@ void BuildAppearance(SectionBuilder &builder) {
 		{ u"avatar"_q, u"forum"_q, u"round"_q, u"shape"_q });
 	builder.addSkip();
 	builder.addDividerText(tr::lng_yoogram_avatars_about());
+
+	builder.addSkip();
+	builder.addSubsectionTitle({
+		.id = u"yoogram/chat_list"_q,
+		.title = tr::lng_yoogram_chat_list(),
+		.keywords = { u"snow"_q, u"stories"_q, u"list"_q },
+	});
+	AddToggle(
+		builder,
+		u"yoogram/force_snow"_q,
+		tr::lng_yoogram_force_snow(),
+		YooGram::ForceSnow(),
+		[](bool value) { YooGram::SetForceSnow(value); },
+		{ u"snow"_q, u"winter"_q, u"menu"_q });
+	AddToggle(
+		builder,
+		u"yoogram/hide_stories"_q,
+		tr::lng_yoogram_hide_stories(),
+		YooGram::HideStories(),
+		[](bool value) { YooGram::SetHideStories(value); },
+		{ u"stories"_q, u"hide"_q });
+	builder.addSkip();
+	builder.addDividerText(tr::lng_yoogram_chat_list_about());
 }
 
 void BuildChats(SectionBuilder &builder) {
@@ -251,6 +309,16 @@ void BuildChats(SectionBuilder &builder) {
 		{ u"sticker"_q, u"time"_q, u"hide"_q });
 	builder.addSkip();
 	builder.addDividerText(tr::lng_yoogram_comma_mention_about());
+
+	builder.addSkip();
+	builder.addSubsectionTitle({
+		.id = u"yoogram/sticker_size_title"_q,
+		.title = tr::lng_yoogram_sticker_size(),
+		.keywords = { u"sticker"_q, u"size"_q },
+	});
+	AddStickerSizeSlider(builder);
+	builder.addSkip();
+	builder.addDividerText(tr::lng_yoogram_sticker_size_about());
 
 	builder.addSkip();
 	builder.addSubsectionTitle({
