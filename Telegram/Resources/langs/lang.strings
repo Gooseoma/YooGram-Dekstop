@@ -927,6 +927,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 "lng_yoogram_hide_tail" = "Remove message tail";
 "lng_yoogram_edited_icon" = "Edited mark as an icon";
 "lng_yoogram_hide_sticker_time" = "Hide time on stickers";
+"lng_yoogram_online_indicator" = "Show online indicator on avatars";
 "lng_yoogram_chat_view" = "Chat view";
 "lng_yoogram_hide_welcome" = "Hide welcome sticker";
 "lng_yoogram_always_hd" = "Always send photos in HD";

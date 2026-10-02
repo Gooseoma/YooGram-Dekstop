@@ -477,6 +477,13 @@ void BuildChats(SectionBuilder &builder) {
 		YooGram::HideStickerTime(),
 		[](bool value) { YooGram::SetHideStickerTime(value); },
 		{ u"sticker"_q, u"time"_q, u"hide"_q });
+	AddToggle(
+		builder,
+		u"yoogram/online_indicator"_q,
+		tr::lng_yoogram_online_indicator(),
+		YooGram::MessageOnlineIndicator(),
+		[](bool value) { YooGram::SetMessageOnlineIndicator(value); },
+		{ u"online"_q, u"status"_q, u"avatar"_q, u"indicator"_q });
 	builder.addSkip();
 	builder.addDividerText(tr::lng_yoogram_comma_mention_about());
 

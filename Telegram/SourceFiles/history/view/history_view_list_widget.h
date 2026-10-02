@@ -889,6 +889,11 @@ private:
 		Painter &p,
 		const Ui::ChatPaintContext &context,
 		QRect clip);
+	void paintOnlineIndicator(
+		Painter &p,
+		not_null<PeerData*> peer,
+		int outerWidth,
+		int userpicTop) const;
 	VideoUserpic *validateVideoUserpic(not_null<PeerData*> peer);
 	void paintDates(
 		Painter &p,
