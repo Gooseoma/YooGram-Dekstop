@@ -108,6 +108,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "platform/platform_specific.h"
 #include "storage/file_download.h"
 #include "storage/storage_account.h"
+#include "yoogram/yoogram_settings.h"
 #include "styles/style_chat_style.h"
 #include "styles/style_media_view.h"
 #include "styles/style_calls.h"
@@ -8060,6 +8061,15 @@ bool OverlayWidget::handleDoubleClick(
 	} else if (!_streamed) {
 		return false;
 	} else {
+		const auto seconds = YooGram::DoubleTapSeekSeconds();
+		const auto side = width() / 3;
+		if (seconds > 0
+			&& (position.x() < side || position.x() > width() - side)) {
+			const auto forward = (position.x() > width() / 2);
+			seekRelativeTime(crl::time(1000) * seconds * (forward ? 1 : -1));
+			playbackPauseResume();
+			return true;
+		}
 		playbackToggleFullScreen();
 		playbackPauseResume();
 	}

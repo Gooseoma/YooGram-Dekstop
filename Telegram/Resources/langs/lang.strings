@@ -902,6 +902,10 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 "lng_yoogram_force_snow" = "Always show snow";
 "lng_yoogram_hide_stories" = "Hide stories";
 "lng_yoogram_chat_list_about" = "Snow is shown in the header of the side menu. Hiding stories applies after a restart.";
+"lng_yoogram_off" = "Off";
+"lng_yoogram_video" = "Video";
+"lng_yoogram_double_tap_seek" = "Double-click seek";
+"lng_yoogram_double_tap_seek_about" = "In the media viewer, a double click on the left or right third of a video jumps back or forward by the chosen time. The middle keeps the usual behavior.";
 "lng_yoogram_sticker_size" = "Sticker size";
 "lng_yoogram_sticker_size_about" = "14 is the normal size, as in the Android app. Applies to chats you open afterwards.";
 "lng_yoogram_avatars" = "Avatars";
