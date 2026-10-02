@@ -7,6 +7,8 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 */
 #pragma once
 
+class QImage;
+
 namespace YooGram {
 
 [[nodiscard]] bool QuickModerationEnabled();
@@ -27,6 +29,8 @@ void SetHidePhoneNumber(bool enabled);
 
 [[nodiscard]] bool CommaAfterMention();
 void SetCommaAfterMention(bool enabled);
+
+[[nodiscard]] const QImage &AppLogo();
 
 // Reads the saved values into the caches used by hot formatting paths.
 void LoadRuntimeSettings();

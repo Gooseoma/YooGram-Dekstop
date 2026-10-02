@@ -11,6 +11,8 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "core/core_settings.h"
 #include "ui/widgets/popup_menu.h"
 
+#include <QtGui/QImage>
+
 #include <atomic>
 
 namespace YooGram {
@@ -91,6 +93,11 @@ bool CommaAfterMention() {
 
 void SetCommaAfterMention(bool enabled) {
 	Write(kCommaMentionKey, enabled);
+}
+
+const QImage &AppLogo() {
+	static const auto result = QImage(u":/gui/art/icon_round512@2x.png"_q);
+	return result;
 }
 
 void LoadRuntimeSettings() {
