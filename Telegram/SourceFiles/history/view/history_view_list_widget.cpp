@@ -80,6 +80,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "ui/ui_utility.h"
 #include "lang/lang_keys.h"
 #include "lang/lang_tag.h"
+#include "yoogram/yoogram_settings.h"
 #include "boxes/peers/edit_participant_box.h"
 #include "boxes/delete_messages_box.h"
 #include "boxes/moderate_messages_box.h"
@@ -101,6 +102,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "data/data_message_reactions.h"
 #include "data/data_peer_values.h"
 #include "styles/style_chat.h"
+#include "styles/style_dialogs.h"
 #include "styles/style_window.h" // columnMaximalWidthLeft
 
 #include <QtWidgets/QApplication>
@@ -690,6 +692,14 @@ ListWidget::ListWidget(
 			update();
 		}, lifetime());
 	}
+
+	_session->changes().peerUpdates(
+		Data::PeerUpdate::Flag::OnlineStatus
+	) | rpl::filter([](const Data::PeerUpdate &) {
+		return YooGram::MessageOnlineIndicator();
+	}) | rpl::on_next([=] {
+		update();
+	}, lifetime());
 
 	_session->data().itemVisibilityQueries(
 	) | rpl::on_next([=](
@@ -3270,6 +3280,7 @@ void ListWidget::paintUserpics(
 					view->width(),
 					st::msgPhotoSize,
 					context.paused);
+				paintOnlineIndicator(p, from, view->width(), userpicTop);
 			} else if (const auto info = item->displayHiddenSenderInfo()) {
 				if (info->customUserpic.empty()) {
 					info->emptyUserpic.paintCircle(
@@ -3300,6 +3311,35 @@ void ListWidget::paintUserpics(
 		}
 		return true;
 	});
+}
+
+void ListWidget::paintOnlineIndicator(
+		Painter &p,
+		not_null<PeerData*> peer,
+		int outerWidth,
+		int userpicTop) const {
+	const auto user = peer->asUser();
+	if (!user
+		|| user->isBot()
+		|| user->isSelf()
+		|| !YooGram::MessageOnlineIndicator()
+		|| !user->lastseen().isOnline(base::unixtime::now())) {
+		return;
+	}
+	const auto size = st::dialogsOnlineBadgeSize;
+	const auto skip = st::dialogsOnlineBadgeSkip;
+	const auto rect = style::rtlrect(
+		st::historyPhotoLeft + st::msgPhotoSize - skip.x() - size,
+		userpicTop + st::msgPhotoSize - skip.y() - size,
+		size,
+		size,
+		outerWidth);
+	PainterHighQualityEnabler hq(p);
+	auto pen = QPen(st::windowBg->c);
+	pen.setWidthF(st::dialogsOnlineBadgeStroke);
+	p.setPen(pen);
+	p.setBrush(st::dialogsOnlineBadgeFg);
+	p.drawEllipse(rect);
 }
 
 ListWidget::VideoUserpic *ListWidget::validateVideoUserpic(

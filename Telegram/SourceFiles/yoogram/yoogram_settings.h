@@ -75,6 +75,10 @@ void SetShowBadges(bool enabled);
 [[nodiscard]] bool SaveDeletedMessages();
 void SetSaveDeletedMessages(bool enabled);
 
+// A green "online" dot on the userpics next to messages.
+[[nodiscard]] bool MessageOnlineIndicator();
+void SetMessageOnlineIndicator(bool enabled);
+
 // Sticker size step like on Android: kStickerSizeDefault is the normal size.
 [[nodiscard]] int StickerSizeStep();
 void SetStickerSizeStep(int step);

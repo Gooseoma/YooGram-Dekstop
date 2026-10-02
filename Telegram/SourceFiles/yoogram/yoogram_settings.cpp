@@ -86,6 +86,7 @@ CachedFlag HideStoriesFlag("yoogram-hide-stories", false);
 CachedFlag HideFolderCountersFlag("yoogram-hide-folder-counters", false);
 CachedFlag ShowBadgesFlag("yoogram-show-badges", true);
 CachedFlag SaveDeletedFlag("yoogram-save-deleted", false);
+CachedFlag OnlineIndicatorFlag("yoogram-online-indicator", false);
 std::atomic<int> StickerSize = kStickerSizeDefault;
 std::atomic<int> DoubleTapSeek = 0;
 std::atomic<int> AvatarRadius = kAvatarRadiusMax;
@@ -244,6 +245,14 @@ void SetSaveDeletedMessages(bool enabled) {
 	SaveDeletedFlag.set(enabled);
 }
 
+bool MessageOnlineIndicator() {
+	return OnlineIndicatorFlag.value();
+}
+
+void SetMessageOnlineIndicator(bool enabled) {
+	OnlineIndicatorFlag.set(enabled);
+}
+
 int StickerSizeStep() {
 	return StickerSize.load(std::memory_order_relaxed);
 }
@@ -305,6 +314,7 @@ void LoadRuntimeSettings() {
 	HideFolderCountersFlag.load();
 	ShowBadgesFlag.load();
 	SaveDeletedFlag.load();
+	OnlineIndicatorFlag.load();
 	DoubleTapSeek.store(
 		ReadInt(kDoubleTapSeekKey, 0, 0, 60),
 		std::memory_order_relaxed);
