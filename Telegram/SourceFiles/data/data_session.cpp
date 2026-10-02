@@ -29,6 +29,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "window/notifications_manager.h"
 #include "history/history.h"
 #include "history/history_item.h"
+#include "yoogram/yoogram_deleted.h"
 #include "history/history_item_components.h"
 #include "history/history_streamed_drafts.h"
 #include "history/view/media/history_view_media.h"
@@ -3353,6 +3354,9 @@ void Session::processMessagesDeleted(
 	for (const auto &messageId : data) {
 		const auto i = list ? list->find(messageId.v) : Messages::iterator();
 		if (list && i != list->end()) {
+			if (YooGram::KeepDeletedMessage(i->second)) {
+				continue;
+			}
 			const auto history = i->second->history();
 			toDestroy.push_back(i->second);
 			historiesToCheck.emplace(history);
@@ -3378,6 +3382,9 @@ void Session::processNonChannelMessagesDeleted(const QVector<MTPint> &data) {
 	auto historiesToCheck = base::flat_set<not_null<History*>>();
 	for (const auto &messageId : data) {
 		if (const auto item = nonChannelMessage(messageId.v)) {
+			if (YooGram::KeepDeletedMessage(item)) {
+				continue;
+			}
 			const auto history = item->history();
 			toDestroy.push_back(item);
 			historiesToCheck.emplace(history);

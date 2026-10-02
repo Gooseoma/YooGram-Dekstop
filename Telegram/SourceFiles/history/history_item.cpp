@@ -6,6 +6,7 @@ For license and copyright information please follow this link:
 https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 */
 #include "history/history_item.h"
+#include "yoogram/yoogram_deleted.h"
 
 #include "api/api_premium.h"
 #include "api/api_sensitive_content.h"
@@ -961,6 +962,7 @@ HistoryItem::HistoryItem(
 }
 
 HistoryItem::~HistoryItem() {
+	YooGram::ForgetKeptDeletedMessage(this);
 	_media = nullptr;
 	clearSavedMedia();
 	if (const auto reply = Get<HistoryMessageReply>()) {

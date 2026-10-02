@@ -6,6 +6,7 @@ For license and copyright information please follow this link:
 https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 */
 #include "history/view/history_view_bottom_info.h"
+#include "yoogram/yoogram_deleted.h"
 #include "yoogram/yoogram_format.h"
 #include "yoogram/yoogram_settings.h"
 
@@ -504,11 +505,14 @@ void BottomInfo::layoutDateText() {
 		: QString();
 	const auto author = _data.author;
 	const auto prefix = !author.isEmpty() ? u", "_q : QString();
-	const auto date = editedPrimary
+	const auto trash = (_data.flags & Data::Flag::Deleted)
+		? QString::fromUcs4(U"\U0001F5D1 ")
+		: QString();
+	const auto date = trash + (editedPrimary
 		? FormatEditedDate(_data.date, _data.editedDate)
 		: edited + ((_data.flags & Data::Flag::ForwardedDate)
 		? Ui::FormatDateTimeSavedFrom(_data.date)
-		: YooGram::FormatTime(_data.date.time()));
+		: YooGram::FormatTime(_data.date.time())));
 	const auto afterAuthor = prefix + date;
 	const auto afterAuthorWidth = st::msgDateFont->width(afterAuthor);
 	const auto authorWidth = st::msgDateFont->width(author);
@@ -701,6 +705,9 @@ BottomInfo::Data BottomInfoDataFromMessage(not_null<Message*> message) {
 	}
 	if (IsAnchoredEphemeral(item)) {
 		result.flags |= Flag::Updated;
+	}
+	if (YooGram::IsKeptDeletedMessage(item)) {
+		result.flags |= Flag::Deleted;
 	}
 	if (const auto views = item->Get<HistoryMessageViews>()) {
 		if (views->views.count >= 0) {

@@ -71,6 +71,10 @@ void SetHideFolderCounters(bool enabled);
 [[nodiscard]] bool ShowBadges();
 void SetShowBadges(bool enabled);
 
+// Keep messages deleted on the server visible (marked) in the chat.
+[[nodiscard]] bool SaveDeletedMessages();
+void SetSaveDeletedMessages(bool enabled);
+
 // Sticker size step like on Android: kStickerSizeDefault is the normal size.
 [[nodiscard]] int StickerSizeStep();
 void SetStickerSizeStep(int step);

@@ -214,6 +214,22 @@ void BuildHub(SectionBuilder &builder) {
 void BuildMain(SectionBuilder &builder) {
 	builder.addSkip();
 	builder.addSubsectionTitle({
+		.id = u"yoogram/deleted"_q,
+		.title = tr::lng_yoogram_deleted(),
+		.keywords = { u"deleted"_q, u"messages"_q, u"save"_q },
+	});
+	AddToggle(
+		builder,
+		u"yoogram/save_deleted"_q,
+		tr::lng_yoogram_save_deleted(),
+		YooGram::SaveDeletedMessages(),
+		[](bool value) { YooGram::SetSaveDeletedMessages(value); },
+		{ u"deleted"_q, u"messages"_q, u"save"_q, u"keep"_q });
+	builder.addSkip();
+	builder.addDividerText(tr::lng_yoogram_save_deleted_about());
+
+	builder.addSkip();
+	builder.addSubsectionTitle({
 		.id = u"yoogram/numbers_time"_q,
 		.title = tr::lng_yoogram_numbers_time(),
 		.keywords = { u"numbers"_q, u"time"_q, u"seconds"_q },
