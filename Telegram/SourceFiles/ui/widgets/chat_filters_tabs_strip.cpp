@@ -24,6 +24,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "menu/menu_mark_as_read.h"
 #include "main/main_session.h"
 #include "settings/sections/settings_folders.h"
+#include "yoogram/yoogram_settings.h"
 #include "ui/widgets/menu/menu_action.h"
 #include "ui/filter_icons.h"
 #include "ui/power_saving.h"
@@ -242,8 +243,9 @@ not_null<Ui::RpWidget*> AddChatFiltersTabsStrip(
 				const auto chats = state.chats;
 				const auto chatsMuted = state.chatsMuted;
 				const auto muted = (chatsMuted + state.marksMuted);
-				const auto count = (chats + state.marks)
-					- (includeMuted ? 0 : muted);
+				const auto count = YooGram::HideFolderCounters()
+					? 0
+					: ((chats + state.marks) - (includeMuted ? 0 : muted));
 				const auto isMuted = includeMuted && (count == muted);
 				slider->setUnreadCount(i, count, isMuted);
 				slider->fitWidthToSections();

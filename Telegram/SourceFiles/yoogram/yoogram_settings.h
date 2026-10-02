@@ -64,6 +64,9 @@ void SetForceSnow(bool enabled);
 [[nodiscard]] bool HideStories();
 void SetHideStories(bool enabled);
 
+[[nodiscard]] bool HideFolderCounters();
+void SetHideFolderCounters(bool enabled);
+
 // Sticker size step like on Android: kStickerSizeDefault is the normal size.
 [[nodiscard]] int StickerSizeStep();
 void SetStickerSizeStep(int step);

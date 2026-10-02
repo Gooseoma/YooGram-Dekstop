@@ -82,6 +82,7 @@ CachedFlag AlwaysHDFlag("yoogram-always-hd", false);
 CachedFlag UnifiedRoundingFlag("yoogram-unified-rounding", false);
 CachedFlag ForceSnowFlag("yoogram-force-snow", false);
 CachedFlag HideStoriesFlag("yoogram-hide-stories", false);
+CachedFlag HideFolderCountersFlag("yoogram-hide-folder-counters", false);
 std::atomic<int> StickerSize = kStickerSizeDefault;
 std::atomic<int> DoubleTapSeek = 0;
 std::atomic<int> AvatarRadius = kAvatarRadiusMax;
@@ -215,6 +216,14 @@ void SetHideStories(bool enabled) {
 	HideStoriesFlag.set(enabled);
 }
 
+bool HideFolderCounters() {
+	return HideFolderCountersFlag.value();
+}
+
+void SetHideFolderCounters(bool enabled) {
+	HideFolderCountersFlag.set(enabled);
+}
+
 int StickerSizeStep() {
 	return StickerSize.load(std::memory_order_relaxed);
 }
@@ -273,6 +282,7 @@ void LoadRuntimeSettings() {
 		std::memory_order_relaxed);
 	ForceSnowFlag.load();
 	HideStoriesFlag.load();
+	HideFolderCountersFlag.load();
 	DoubleTapSeek.store(
 		ReadInt(kDoubleTapSeekKey, 0, 0, 60),
 		std::memory_order_relaxed);

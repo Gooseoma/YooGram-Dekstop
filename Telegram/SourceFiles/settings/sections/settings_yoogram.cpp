@@ -309,6 +309,22 @@ void BuildAppearance(SectionBuilder &builder) {
 		{ u"stories"_q, u"hide"_q });
 	builder.addSkip();
 	builder.addDividerText(tr::lng_yoogram_chat_list_about());
+
+	builder.addSkip();
+	builder.addSubsectionTitle({
+		.id = u"yoogram/folders"_q,
+		.title = tr::lng_yoogram_folders(),
+		.keywords = { u"folders"_q, u"counter"_q, u"unread"_q },
+	});
+	AddToggle(
+		builder,
+		u"yoogram/hide_folder_counters"_q,
+		tr::lng_yoogram_hide_folder_counters(),
+		YooGram::HideFolderCounters(),
+		[](bool value) { YooGram::SetHideFolderCounters(value); },
+		{ u"folders"_q, u"counter"_q, u"unread"_q, u"badge"_q });
+	builder.addSkip();
+	builder.addDividerText(tr::lng_yoogram_folders_about());
 }
 
 void BuildChats(SectionBuilder &builder) {

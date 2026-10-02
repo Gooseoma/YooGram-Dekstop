@@ -901,6 +901,9 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 "lng_yoogram_chat_list" = "Chat list";
 "lng_yoogram_force_snow" = "Always show snow";
 "lng_yoogram_hide_stories" = "Hide stories";
+"lng_yoogram_folders" = "Chat folders";
+"lng_yoogram_hide_folder_counters" = "Hide unread counters on folders";
+"lng_yoogram_folders_about" = "Removes the unread badges from the folder tabs and the folder sidebar. The change applies when the counters next update.";
 "lng_yoogram_chat_list_about" = "Snow is shown in the header of the side menu. Hiding stories applies after a restart.";
 "lng_yoogram_off" = "Off";
 "lng_yoogram_video" = "Video";
