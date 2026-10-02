@@ -6,6 +6,7 @@ For license and copyright information please follow this link:
 https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 */
 #include "ui/text/format_values.h"
+#include "yoogram/yoogram_format.h"
 
 #include "base/unixtime.h"
 #include "lang/lang_keys.h"
@@ -87,28 +88,26 @@ QString FormatDateTime(QDateTime date) {
 		return tr::lng_mediaview_today(
 			tr::now,
 			lt_time,
-			QLocale().toString(date.time(), QLocale::ShortFormat));
+			YooGram::FormatTime(date.time()));
 	} else if (date.date().addDays(1) == now.date()) {
 		return tr::lng_mediaview_yesterday(
 			tr::now,
 			lt_time,
-			QLocale().toString(date.time(), QLocale::ShortFormat));
+			YooGram::FormatTime(date.time()));
 	} else {
 		return tr::lng_mediaview_date_time(
 			tr::now,
 			lt_date,
 			QLocale().toString(date.date(), QLocale::ShortFormat),
 			lt_time,
-			QLocale().toString(date.time(), QLocale::ShortFormat));
+			YooGram::FormatTime(date.time()));
 	}
 }
 
 QString FormatDateTimeSavedFrom(QDateTime dateTime) {
 	const auto current = QDate::currentDate();
 	const auto date = dateTime.date();
-	const auto timeStr = QLocale().toString(
-		dateTime.time(),
-		QLocale::ShortFormat);
+	const auto timeStr = YooGram::FormatTime(dateTime.time());
 
 	if (date == current) {
 		return tr::lng_mediaview_today(tr::now, lt_time, timeStr);
@@ -533,7 +532,7 @@ QString FormatDialogsDate(const QDateTime &lastTime) {
 
 	if ((lastDate == nowDate)
 		|| (std::abs(lastTime.secsTo(now)) < kRecentlyInSeconds)) {
-		return QLocale().toString(lastTime.time(), QLocale::ShortFormat);
+		return YooGram::FormatTime(lastTime.time());
 	} else if (std::abs(lastDate.daysTo(nowDate)) < 7) {
 		return langDayOfWeek(lastDate);
 	} else {

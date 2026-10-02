@@ -54,6 +54,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "ui/round_rect.h"
 #include "ui/ui_utility.h"
 #include "styles/style_chat.h"
+#include "yoogram/yoogram_settings.h"
 #include "styles/style_chat_helpers.h"
 #include "styles/style_dialogs.h"
 #include "styles/style_widgets.h"
@@ -2013,6 +2014,13 @@ void InitFieldAutocomplete(
 				PrepareMentionTag(user));
 		} else {
 			field->insertTag('@' + data.mention);
+			if (YooGram::CommaAfterMention()) {
+				auto cursor = field->textCursor();
+				cursor.movePosition(QTextCursor::PreviousCharacter);
+				cursor.insertText(u","_q);
+				cursor.movePosition(QTextCursor::NextCharacter);
+				field->setTextCursor(cursor);
+			}
 		}
 	}, raw->lifetime());
 

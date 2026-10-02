@@ -59,6 +59,7 @@ menuIconManage: icon {{ "menu/manage", menuIconColor }};
 menuIconDiscussion: icon {{ "menu/discussion", menuIconColor }};
 menuIconStats: icon {{ "menu/stats", menuIconColor }};
 menuIconBoosts: icon {{ "menu/boosts", menuIconColor }};
+menuIconYooGram: icon {{ "yoogram/glyph", menuIconColor }};
 menuIconEarn: icon {{ "menu/earn", menuIconColor }};
 menuIconCancelFee: icon {{ "menu/cancel_fee", menuIconColor }};
 menuIconCreatePoll: icon {{ "menu/create_poll", menuIconColor }};

@@ -18,6 +18,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "main/main_session_settings.h"
 #include "ui/wrap/slide_wrap.h"
 #include "ui/text/format_values.h" // Ui::FormatPhone
+#include "yoogram/yoogram_settings.h"
 #include "ui/text/text_utilities.h"
 #include "lang/lang_keys.h"
 #include "data/notify/data_notify_settings.h"
@@ -131,7 +132,9 @@ rpl::producer<TextWithEntities> PhoneValue(not_null<UserData*> user) {
 			user,
 			UpdateFlag::PhoneNumber) | rpl::to_empty
 	) | rpl::map([=] {
-		return tr::marked(Ui::FormatPhone(user->phone()));
+		return (user->isSelf() && YooGram::HidePhoneNumber())
+			? tr::marked(tr::lng_info_mobile_hidden(tr::now))
+			: tr::marked(Ui::FormatPhone(user->phone()));
 	});
 }
 
