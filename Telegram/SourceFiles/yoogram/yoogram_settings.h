@@ -11,6 +11,9 @@ class QImage;
 
 namespace YooGram {
 
+inline constexpr auto kStickerSizeMin = 2;
+inline constexpr auto kStickerSizeMax = 20;
+inline constexpr auto kStickerSizeDefault = 14;
 inline constexpr auto kAvatarRadiusMin = 2;
 inline constexpr auto kAvatarRadiusMax = 50;
 
@@ -54,6 +57,16 @@ void SetAlwaysHDPhotos(bool enabled);
 void SetAvatarRadiusPercent(int percent);
 [[nodiscard]] bool CustomAvatarRadius();
 [[nodiscard]] double UserpicRadiusMultiplier();
+
+[[nodiscard]] bool ForceSnow();
+void SetForceSnow(bool enabled);
+
+[[nodiscard]] bool HideStories();
+void SetHideStories(bool enabled);
+
+// Sticker size step like on Android: kStickerSizeDefault is the normal size.
+[[nodiscard]] int StickerSizeStep();
+void SetStickerSizeStep(int step);
 
 [[nodiscard]] bool UnifiedRounding();
 void SetUnifiedRounding(bool enabled);

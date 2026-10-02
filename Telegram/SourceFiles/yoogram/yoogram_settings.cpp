@@ -28,6 +28,20 @@ void Write(std::string_view key, bool value) {
 	Core::App().saveSettingsDelayed();
 }
 
+[[nodiscard]] int ReadInt(std::string_view key, int fallback, int min, int max) {
+	const auto saved = Core::App().settings().readPref<QByteArray>(key);
+	auto ok = false;
+	const auto value = saved.toInt(&ok);
+	return ok ? std::clamp(value, min, max) : fallback;
+}
+
+void WriteInt(std::string_view key, int value) {
+	Core::App().settings().writePref<QByteArray>(
+		key,
+		QByteArray::number(value));
+	Core::App().saveSettingsDelayed();
+}
+
 // A flag saved in the settings and cached for hot code paths.
 class CachedFlag final {
 public:
@@ -55,6 +69,7 @@ private:
 };
 
 constexpr auto kAvatarRadiusKey = std::string_view("yoogram-avatar-radius");
+constexpr auto kStickerSizeKey = std::string_view("yoogram-sticker-size");
 
 CachedFlag FullNumbersFlag("yoogram-full-numbers", false);
 CachedFlag TimeSecondsFlag("yoogram-time-seconds", false);
@@ -64,6 +79,9 @@ CachedFlag EditedIconFlag("yoogram-edited-icon", false);
 CachedFlag HideStickerTimeFlag("yoogram-hide-sticker-time", false);
 CachedFlag AlwaysHDFlag("yoogram-always-hd", false);
 CachedFlag UnifiedRoundingFlag("yoogram-unified-rounding", false);
+CachedFlag ForceSnowFlag("yoogram-force-snow", false);
+CachedFlag HideStoriesFlag("yoogram-hide-stories", false);
+std::atomic<int> StickerSize = kStickerSizeDefault;
 std::atomic<int> AvatarRadius = kAvatarRadiusMax;
 
 } // namespace
@@ -167,10 +185,7 @@ int AvatarRadiusPercent() {
 
 void SetAvatarRadiusPercent(int percent) {
 	percent = std::clamp(percent, kAvatarRadiusMin, kAvatarRadiusMax);
-	Core::App().settings().writePref<QByteArray>(
-		kAvatarRadiusKey,
-		QByteArray::number(percent));
-	Core::App().saveSettingsDelayed();
+	WriteInt(kAvatarRadiusKey, percent);
 	AvatarRadius.store(percent, std::memory_order_relaxed);
 }
 
@@ -180,6 +195,32 @@ bool CustomAvatarRadius() {
 
 double UserpicRadiusMultiplier() {
 	return AvatarRadiusPercent() / 100.;
+}
+
+bool ForceSnow() {
+	return ForceSnowFlag.value();
+}
+
+void SetForceSnow(bool enabled) {
+	ForceSnowFlag.set(enabled);
+}
+
+bool HideStories() {
+	return HideStoriesFlag.value();
+}
+
+void SetHideStories(bool enabled) {
+	HideStoriesFlag.set(enabled);
+}
+
+int StickerSizeStep() {
+	return StickerSize.load(std::memory_order_relaxed);
+}
+
+void SetStickerSizeStep(int step) {
+	step = std::clamp(step, kStickerSizeMin, kStickerSizeMax);
+	WriteInt(kStickerSizeKey, step);
+	StickerSize.store(step, std::memory_order_relaxed);
 }
 
 bool UnifiedRounding() {
@@ -204,15 +245,22 @@ void LoadRuntimeSettings() {
 	HideStickerTimeFlag.load();
 	AlwaysHDFlag.load();
 	UnifiedRoundingFlag.load();
-	const auto saved = Core::App().settings().readPref<QByteArray>(
-		kAvatarRadiusKey);
-	auto ok = false;
-	const auto value = saved.toInt(&ok);
 	AvatarRadius.store(
-		ok
-			? std::clamp(value, kAvatarRadiusMin, kAvatarRadiusMax)
-			: kAvatarRadiusMax,
+		ReadInt(
+			kAvatarRadiusKey,
+			kAvatarRadiusMax,
+			kAvatarRadiusMin,
+			kAvatarRadiusMax),
 		std::memory_order_relaxed);
+	StickerSize.store(
+		ReadInt(
+			kStickerSizeKey,
+			kStickerSizeDefault,
+			kStickerSizeMin,
+			kStickerSizeMax),
+		std::memory_order_relaxed);
+	ForceSnowFlag.load();
+	HideStoriesFlag.load();
 	ApplyGlassMenuSetting();
 }
 
