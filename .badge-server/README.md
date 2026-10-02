@@ -44,6 +44,15 @@ client must verify first and only then parse. Payload:
 Client rules: verify the signature; ignore the list if `version` is lower than
 the cached one; keep the last good list when the server is unreachable.
 
+## Changing the port
+
+Port 80 busy? Set `BADGE_HOST_PORT` in `.env` (e.g. `BADGE_HOST_PORT=8080`) and
+run `docker compose up -d`. The container always listens on 8080 inside; only
+the host side changes. With Cloudflare proxying over plain HTTP, pick a port it
+supports (8080, 8880, 2052, 2082, 2086, 2095) and nothing else, or the domain
+will not reach the server. Behind your own nginx/caddy, bind to localhost only:
+`"127.0.0.1:${BADGE_HOST_PORT:-8080}:8080"`.
+
 ## Cloudflare
 
 With SSL mode **Flexible** the hop Cloudflare -> server is plain HTTP, so the
