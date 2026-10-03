@@ -14,8 +14,16 @@ if not exist "%VSWHERE%" (
   echo vswhere.exe not found. Install Visual Studio with the C++ workload.
   goto fail
 )
+rem Prefer Visual Studio 2022 (17.x): several libraries are built with MSBuild
+rem and the v143 toolset, which Visual Studio 2026 does not provide.
 set "VSPATH="
-for /f "usebackq delims=" %%i in (`"%VSWHERE%" -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath`) do set "VSPATH=%%i"
+for /f "usebackq delims=" %%i in (`"%VSWHERE%" -latest -version "[17.0,18.0)" -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath`) do set "VSPATH=%%i"
+if not defined VSPATH (
+  echo Visual Studio 2022 was not found, trying the newest Visual Studio.
+  echo NOTE: Visual Studio 2026 has no v143 MSBuild toolset, building libraries may fail.
+  echo Install Visual Studio 2022 17.14 with the C++ workload.
+  for /f "usebackq delims=" %%i in (`"%VSWHERE%" -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath`) do set "VSPATH=%%i"
+)
 if not defined VSPATH (
   echo Visual Studio with the C++ x64 tools was not found.
   goto fail
