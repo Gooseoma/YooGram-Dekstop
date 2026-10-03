@@ -38,6 +38,12 @@ if errorlevel 1 (
   goto fail
 )
 
+rem Force English compiler messages. ffmpeg's configure recognizes MSVC by the
+rem English banner of cl.exe; with a localized Visual Studio (e.g. Russian) it
+rem fails with "LNK1136" / "C compiler test failed".
+set VSLANG=1033
+set LANG=en_US.UTF-8
+
 where python >nul 2>nul
 if errorlevel 1 (
   echo Python was not found in PATH. Install Python 3.10 and tick "Add to PATH".
