@@ -1,0 +1,69 @@
+@echo off
+setlocal EnableDelayedExpansion
+rem YooGram: build everything on Windows with one script.
+rem Put the cloned repository into a SHORT path without spaces, e.g.
+rem D:\TBuild\YooGram-Desktop, and run this file from there (double click works).
+rem Needs: Visual Studio with C++ tools (MSVC v14.44, Windows SDK), Python, Git.
+
+set "REPO=%~dp0.."
+for %%I in ("%REPO%") do set "REPO=%%~fI"
+
+echo === Looking for Visual Studio ===
+set "VSWHERE=%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe"
+if not exist "%VSWHERE%" (
+  echo vswhere.exe not found. Install Visual Studio with the C++ workload.
+  goto fail
+)
+set "VSPATH="
+for /f "usebackq delims=" %%i in (`"%VSWHERE%" -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath`) do set "VSPATH=%%i"
+if not defined VSPATH (
+  echo Visual Studio with the C++ x64 tools was not found.
+  goto fail
+)
+echo Found: %VSPATH%
+
+echo === Setting up the x64 environment ===
+call "%VSPATH%\VC\Auxiliary\Build\vcvars64.bat" -vcvars_ver=14.44
+if errorlevel 1 (
+  echo vcvars64.bat failed. In the Visual Studio Installer add the component
+  echo "MSVC v14.44 build tools" and the Windows SDK 10.0.26100.0.
+  goto fail
+)
+
+where python >nul 2>nul
+if errorlevel 1 (
+  echo Python was not found in PATH. Install Python 3.10 and tick "Add to PATH".
+  goto fail
+)
+where git >nul 2>nul
+if errorlevel 1 (
+  echo Git was not found in PATH.
+  goto fail
+)
+
+if not defined TDESKTOP_API_ID set /p TDESKTOP_API_ID=Your api_id from my.telegram.org: 
+if not defined TDESKTOP_API_HASH set /p TDESKTOP_API_HASH=Your api_hash: 
+
+echo === Building libraries (1-3 hours the first time, safe to re-run) ===
+call "%REPO%\Telegram\build\prepare\win.bat" silent qt6
+if errorlevel 1 goto fail
+
+echo === Configuring ===
+cd /d "%REPO%\Telegram"
+call configure.bat x64 qt6 -D TDESKTOP_API_ID=%TDESKTOP_API_ID% -D TDESKTOP_API_HASH=%TDESKTOP_API_HASH% -D DESKTOP_APP_DISABLE_AUTOUPDATE=ON -D CMAKE_CONFIGURATION_TYPES=Release
+if errorlevel 1 goto fail
+
+echo === Building YooGram (Release) ===
+cmake --build ..\out --config Release --parallel
+if errorlevel 1 goto fail
+
+echo.
+echo DONE. Telegram.exe is in %REPO%\out\Release
+pause
+exit /b 0
+
+:fail
+echo.
+echo FAILED. Copy the last 30-40 lines above (before this message) and send them.
+pause
+exit /b 1
