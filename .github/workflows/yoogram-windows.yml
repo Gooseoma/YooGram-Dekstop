@@ -4,6 +4,10 @@ name: YooGram Windows installer.
 # installer plus a portable zip. Run it manually: Actions -> this workflow ->
 # Run workflow. The result is in the run's Artifacts.
 #
+# Heads up: building both Debug and Release libraries is heavy (hours, lots of
+# disk). If the runner runs out of space, build locally, see
+# docs/yoogram-build.md.
+#
 # Secrets (Settings -> Secrets and variables -> Actions):
 #   API_ID, API_HASH - your own Telegram API credentials. Without them the
 #                      limited test credentials are used, which is only fine
@@ -106,8 +110,9 @@ jobs:
           restore-keys: ${{ runner.OS }}-x64-qt6-
 
       - name: Libraries.
+        # No "skip-release": a Release build of the app needs Release libraries.
         run: |
-          %TBUILD%\%REPO_NAME%\Telegram\build\prepare\win.bat skip-release silent qt6
+          %TBUILD%\%REPO_NAME%\Telegram\build\prepare\win.bat silent qt6
 
       - name: Choose API credentials.
         shell: bash
